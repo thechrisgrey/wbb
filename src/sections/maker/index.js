@@ -307,7 +307,7 @@ export function init(root, ctx) {
     gsap
       .timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: collage, start: 'top bottom', end: 'bottom top', scrub: 0.8 } })
       .fromTo(facePlate, { y: 110, rotation: 9 }, { y: -50, rotation: -2, duration: 1 }, 0)
-      .fromTo(handPlate, { y: 170, rotation: -10 }, { y: -30, rotation: 2, duration: 1 }, 0)
+      .fromTo(handPlate, { y: 120, rotation: -10 }, { y: -30, rotation: 2, duration: 1 }, 0)
       .fromTo(seal, { y: 60 }, { y: -40, duration: 1 }, 0);
     gsap.set([facePlate, handPlate], { autoAlpha: 0 });
     ScrollTrigger.create({
