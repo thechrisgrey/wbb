@@ -5,7 +5,7 @@
   --mk-bg: var(--walnut);
   --mk-fg: var(--paper);
   --mk-rule: rgba(244, 239, 226, 0.22);
-  --mk-card-w: min(55vw, 300px);
+  --mk-card-w: min(52vw, 300px);
   background: var(--mk-bg);
   color: var(--mk-fg);
   padding-top: clamp(64px, 17vw, 150px);
@@ -169,7 +169,7 @@
   z-index: 0;
   display: grid;
   color: var(--orange);
-  font-size: min(46vw, 22rem);
+  font-size: min(37vw, 22rem);
   line-height: 1;
   letter-spacing: -0.02em;
   pointer-events: none;
@@ -420,8 +420,12 @@
   .s-maker__ctrl {
     max-width: 720px;
   }
+  .s-maker__stage {
+    max-width: 720px;
+    margin-inline: auto;
+  }
   .s-maker__big {
-    font-size: 30rem;
+    font-size: 19rem;
   }
   .s-maker__mission {
     display: grid;

@@ -397,11 +397,17 @@ export function build({ wood = 'mahogany' } = {}) {
   const T = I(0.5);
 
   // ---------- box: four mitred sides ----------
-  const seamMat = K.M.woodMaterial(wood, { darken: 0.45 });
-  seamMat.userData.woodRole = 'primary';
+  // Shared materials keep the count low; every one follows the swatches.
+  const tone = (darken) => {
+    const m = K.M.woodMaterial(wood, { darken });
+    m.userData.woodRole = 'primary';
+    return m;
+  };
+  const bodyMat = tone(1);
+  const seamMat = tone(0.45);
   const side = (len, rotY, pos, off) =>
     regrain(
-      K.wood(mitredSide({ length: len, height: H, thick: T, ease: 0.0008, seam: 0.0004 }), { species: wood, materials: [{}, seamMat], rot: [0, rotY, 0], pos }),
+      K.wood(mitredSide({ length: len, height: H, thick: T, ease: 0.0008, seam: 0.0004 }), { species: wood, materials: [bodyMat, seamMat], rot: [0, rotY, 0], pos }),
       'x',
       0.52,
       off,
@@ -411,6 +417,7 @@ export function build({ wood = 'mahogany' } = {}) {
   const right = side(W, Math.PI / 2, [L / 2, 0, 0], [0.22, 0.38]);
   const left = side(W, -Math.PI / 2, [-L / 2, 0, 0], [0.84, 0.71]);
   const bottom = K.wood(new THREE.BoxGeometry(L - 2 * T + 0.002, I(0.25), W - 2 * T + 0.002), { species: wood, grain: 'x', size: 0.5, pos: [0, I(0.2), 0] });
+  bottom.material = bodyMat;
 
   // two pairs of thin wenge splines at each corner
   const sp = I(0.065);
@@ -471,7 +478,7 @@ export function build({ wood = 'mahogany' } = {}) {
     return p.map((v) => [v.x, v.y]);
   };
   const GRAIN = { tile: [0.5, 0.23], offset: [0.37, 0.52] };
-  const mats = [{}, { darken: 0.62 }, { darken: 0.42 }, { darken: 0.16 }];
+  const mats = [bodyMat, tone(0.62), tone(0.42), tone(0.16)];
 
   const lidTop = woodSlab(
     {

@@ -72,7 +72,7 @@ export function init(root, ctx) {
   const geo = { W: 0, H: 0, ts: 78 };
   const sizeTiles = () => {
     const W = area.clientWidth;
-    geo.ts = Math.round(motion ? clamp(W * 0.215, 62, 104) : clamp((W - 56) / 4, 52, 96));
+    geo.ts = Math.round(motion ? clamp(W * 0.215, 62, 104) : clamp((W - 96) / 4, 48, 92));
     root.style.setProperty('--ts', `${geo.ts}px`);
     geo.W = W;
     geo.H = area.clientHeight;
@@ -108,6 +108,7 @@ export function init(root, ctx) {
     document.fonts?.ready.then(fitBig);
     ScrollTrigger.addEventListener('refreshInit', onRefresh);
     tidyBtn.hidden = true;
+    throwsEl.parentElement.hidden = true;
     $('[data-hint]', root).textContent = 'WoodBaby';
     return () => ScrollTrigger.removeEventListener('refreshInit', onRefresh);
   }

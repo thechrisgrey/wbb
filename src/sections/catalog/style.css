@@ -139,6 +139,7 @@
 }
 .s-catalog__grid {
   position: relative;
+  z-index: 0; /* own stacking context: flying cards stay under the sticky bar */
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-auto-flow: row dense;
