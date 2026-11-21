@@ -15,6 +15,8 @@ The terminal prints a Network URL. Open it on a phone on the same Wi-Fi.
 
 `npm run build` writes a static site to `dist/`. `npm run preview` serves that build.
 
+`npm run build:pages` writes the same build to `docs/`, which GitHub Pages serves from this branch (repo Settings, Pages, deploy from a branch, folder `/docs`).
+
 ## What is on the page
 
 | Section | What it does |
@@ -50,7 +52,8 @@ src/sections/<name>/     one folder per section: template.html, style.css, index
 src/ui/                  preloader, dock and menu, product sheet
 src/three/               turntable stage, materials, modeling kit, one model per product
 public/media/            photos, video, textures
-docs/DESIGN.md           design language and the rules every section follows
+DESIGN.md                design language and the rules every section follows
+docs/                    the built site, served by GitHub Pages (regenerate with npm run build:pages)
 ```
 
 Two dev pages help while working on one part at a time:
