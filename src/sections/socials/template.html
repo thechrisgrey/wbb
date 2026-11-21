@@ -1,0 +1,49 @@
+<section class="section s-socials on-ink" data-section="socials" id="socials" aria-labelledby="socials-h">
+  <!-- Poster head: a caption row, one big line built from her phrase "the woman you watch make them". -->
+  <header class="s-socials__head wrap">
+    <p class="s-socials__eyebrow t-cap">
+      <span>Woodbaby's Socials</span>
+      <span data-total>06 channels</span>
+    </p>
+    <h2 class="s-socials__h t-h1" id="socials-h">Watch her <span class="t-serif">make them.</span></h2>
+  </header>
+
+  <!-- The deck: six tall story cards, one per channel (SOCIALS in src/data/site.js), rendered in index.js.
+       Drag or throw sideways; tap the card in front to open it in a new tab. -->
+  <div class="s-socials__deck" data-deck>
+    <ul class="s-socials__track" data-track aria-label="Her channels"></ul>
+  </div>
+
+  <div class="s-socials__meter wrap" data-meter>
+    <p class="s-socials__count t-cap" aria-live="polite">
+      <span class="s-socials__dig"><b data-idx>01</b></span><span class="s-socials__of">/ <span data-of>06</span></span>
+    </p>
+    <span class="s-socials__rail" aria-hidden="true"><i data-fill></i></span>
+    <span class="s-socials__nav">
+      <button class="s-socials__step" type="button" data-step="-1" aria-label="Previous channel">←</button>
+      <button class="s-socials__step" type="button" data-step="1" aria-label="Next channel">→</button>
+    </span>
+  </div>
+
+  <div class="s-socials__more wrap">
+    <p class="s-socials__also t-cap">Also on</p>
+    <ul class="s-socials__chips" data-more></ul>
+  </div>
+
+  <!-- Newsletter: her copy (NEWSLETTER). A concept preview, so nothing is sent anywhere. -->
+  <div class="s-socials__news-wrap wrap">
+    <form class="s-socials__news" data-news novalidate>
+      <p class="s-socials__news-cap t-cap"><span>Newsletter</span><span>WoodBaby</span></p>
+      <h3 class="s-socials__news-h t-h2" data-news-title>Subscribe to our emails</h3>
+      <p class="s-socials__news-body" data-news-body>Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.</p>
+      <div class="s-socials__field">
+        <label class="sr-only" for="socials-email">Email</label>
+        <input class="s-socials__input" id="socials-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="Email" required />
+        <span class="s-socials__go"><button class="btn s-socials__submit" type="submit">Subscribe <span class="btn__arrow">→</span></button></span>
+      </div>
+      <p class="s-socials__note" data-note role="status" hidden>
+        This is a preview. Signup happens on <a href="https://woodbabybuilds.com" target="_blank" rel="noopener" data-store>woodbabybuilds.com</a>.
+      </p>
+    </form>
+  </div>
+</section>

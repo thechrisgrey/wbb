@@ -122,7 +122,7 @@ export const BUILD_VIDEO = {
 
 // Wood species the 3D models can wear. `tex` is a file in public/media/textures cut from her own product photos.
 export const WOODS = {
-  walnut: { label: 'Walnut', tex: 'walnut', tint: '#93745f', swatch: '#5b3a24', roughness: 0.5 },
+  walnut: { label: 'Walnut', tex: 'walnut', tint: '#96929c', swatch: '#5b3a24', roughness: 0.5 },
   oak: { label: 'Oak', tex: 'oak', tint: '#e9d6ba', swatch: '#c99a63', roughness: 0.6 },
   maple: { label: 'Maple', tex: 'maple', tint: '#f6ead8', swatch: '#e2cba9', roughness: 0.58 },
   mahogany: { label: 'Mahogany', tex: 'mahogany', tint: '#f2c4aa', swatch: '#8a3f22', roughness: 0.5 },

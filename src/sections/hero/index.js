@@ -74,6 +74,9 @@ export function init(root, ctx) {
     next.style.cssText = 'position:absolute;left:0;bottom:0;display:flex;';
     next.innerHTML = [...text].map((ch) => `<span>${ch}</span>`).join('');
     wordEl.appendChild(next);
+    // long words ("Clamp.", "Reveal.") shrink to stay inside the frame
+    const room = frame.offsetWidth - 2 * parseFloat(getComputedStyle(wordEl).left || 16) - 6;
+    if (next.offsetWidth > room) next.style.fontSize = `${(room / next.offsetWidth).toFixed(3)}em`;
     if (reduced) {
       old.forEach((n) => n.remove());
       return;
@@ -213,7 +216,6 @@ export function init(root, ctx) {
   const top = $('[data-hero-top]');
   const cue = $('[data-hero-cue]');
   const meta = $('[data-hero-meta]');
-  const wipe = $('[data-hero-wipe]');
   let tl = null;
   let cueTween = null;
 
@@ -238,7 +240,7 @@ export function init(root, ctx) {
       scrollTrigger: {
         trigger: pin,
         start: 'top top',
-        end: '+=230%',
+        end: '+=300%',
         pin: true,
         scrub: 0.6,
         anticipatePin: 1,
@@ -277,9 +279,12 @@ export function init(root, ctx) {
       .fromTo(lede, { autoAlpha: 0, y: 26 }, { autoAlpha: 1, y: 0, duration: 11, ease: 'power2.out' }, 47)
       .fromTo(actions, { scale: 0, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 11, stagger: 4, ease: 'back.out(1.9)' }, 53)
       .fromTo(chap, { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 12, ease: 'power2.out' }, 40)
-      // hold, then the orange field arrives
-      .to(wipe, { clipPath: 'inset(0% 0% 0% 0%)', duration: 17, ease: 'power2.inOut' }, 83)
-      .to(frame, { rotation: -2, duration: 17, ease: 'power1.in' }, 83);
+      // Everything has landed by the halfway mark. The rest of the pin is a short hold, then the orange
+      // manifesto slides up over this screen (it overlaps the last 100svh of the pin, see base.css),
+      // while the card leans and the copy drifts up a touch underneath it.
+      .to(frame, { rotation: -3, yPercent: -4, duration: 44, ease: 'power1.in' }, 84)
+      .to(root.querySelector('.s-hero__copy'), { yPercent: -10, duration: 44, ease: 'power1.in' }, 84)
+      .to({}, { duration: 0.001 }, 128);
 
     // intro, once the preloader lifts
     gsap.set(tileInner, { y: () => -window.innerHeight * 0.5, rotation: () => gsap.utils.random(-140, 140), autoAlpha: 0 });

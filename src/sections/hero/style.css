@@ -289,14 +289,6 @@
   background: currentColor;
   transform-origin: top center;
 }
-.s-hero__wipe {
-  position: absolute;
-  inset: 0;
-  z-index: 8;
-  background: var(--orange);
-  clip-path: inset(100% 0% 0% 0%);
-  pointer-events: none;
-}
 
 /* Wide screens: the portrait story stands as a tall card on ink, then moves into its slot beside the type. */
 @media (min-width: 900px) {

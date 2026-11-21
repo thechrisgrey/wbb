@@ -1,0 +1,45 @@
+<section class="section s-catalog on-paper" data-section="catalog" id="catalog" aria-labelledby="catalog-h">
+  <!-- Header: a poster count, her section line and her shop-all copy. Copy is hers (src/data). -->
+  <header class="s-catalog__head wrap">
+    <p class="s-catalog__eyebrow t-cap">
+      <span>A few favorites</span>
+      <span data-range>Nº 01 / 17</span>
+    </p>
+
+    <div class="s-catalog__count" aria-hidden="true">
+      <span class="s-catalog__num t-num"><span class="s-catalog__digits" data-count>17</span></span>
+      <span class="s-catalog__unit t-cap">
+        <span data-unit>pieces</span>
+        <span data-room-label>All rooms</span>
+      </span>
+    </div>
+
+    <h2 class="s-catalog__h t-h1" id="catalog-h">Goods worth the <span class="t-serif">shelf space</span></h2>
+    <p class="s-catalog__lede t-lede" data-lede>Objects built with intention. Every WoodBaby piece starts as raw material and gets shaped by hand — traditional techniques, modern design, and real respect for the wood.</p>
+    <a class="s-catalog__all t-cap" data-shop-all href="https://woodbabybuilds.com/collections/shop-all-1" target="_blank" rel="noopener"><span>View all</span> <span aria-hidden="true">→</span></a>
+  </header>
+
+  <!-- Filter chips: stick to the top of the screen while the grid scrolls under them. -->
+  <div class="s-catalog__sentinel" aria-hidden="true"></div>
+  <div class="s-catalog__bar">
+    <div class="s-catalog__chips" role="group" aria-label="Filter pieces by room" data-chips>
+      <button class="chip s-catalog__chip" type="button" data-filter="all" aria-pressed="true">All <sup>17</sup></button>
+      <button class="chip s-catalog__chip" type="button" data-filter="kitchen" aria-pressed="false">Kitchen + Table <sup>08</sup></button>
+      <button class="chip s-catalog__chip" type="button" data-filter="bath" aria-pressed="false">Bed + Bath <sup>02</sup></button>
+      <button class="chip s-catalog__chip" type="button" data-filter="home" aria-pressed="false">Home + Furniture <sup>08</sup></button>
+    </div>
+  </div>
+
+  <!-- The grid. Cards are rendered from the product data in index.js. -->
+  <div class="s-catalog__body wrap">
+    <p class="sr-only" aria-live="polite" data-status></p>
+    <ul class="s-catalog__grid" data-grid aria-label="All pieces"></ul>
+
+    <div class="s-catalog__foot">
+      <p class="s-catalog__end t-cap"><span>Handmade in Nashville, TN</span><span>Made to order</span></p>
+      <div class="s-catalog__cta-wrap">
+        <a class="s-catalog__cta btn" data-shop-all href="https://woodbabybuilds.com/collections/shop-all-1" target="_blank" rel="noopener">Shop all on woodbabybuilds.com <span class="btn__arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>

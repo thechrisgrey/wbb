@@ -21,7 +21,8 @@ function warmVideo() {
     v.muted = true;
     v.playsInline = true;
     v.preload = 'auto';
-    v.src = asset(window.innerWidth > 700 ? BUILD_VIDEO.src1080 : BUILD_VIDEO.src720);
+    // same choice the hero makes, so the bytes are already cached when it starts
+    v.src = asset(navigator.connection?.saveData || window.innerWidth < 340 ? BUILD_VIDEO.src720 : BUILD_VIDEO.src1080);
     const done = () => resolve();
     v.addEventListener('canplaythrough', done, { once: true });
     v.addEventListener('loadeddata', done, { once: true });
