@@ -69,15 +69,17 @@ The catalog and media were captured from her store on 21 November 2026.
 
 ## Adding more of her video
 
-Her site hosts one video, the stool build. It is re-cut into build order at `public/media/video/`, and its chapters are listed in `BUILD_VIDEO` in `src/data/site.js`.
+Her site hosts one video, the stool build. It is re-cut into build order at `public/media/video/`, and its chapters are listed in `BUILD_VIDEO` in `src/data/site.js`. The hero plays that one video.
 
-To add clips from Instagram, TikTok or YouTube, export them as MP4 (H.264, portrait, muted) into `public/media/video/` and list them in `src/data/site.js`.
+To swap in a different clip, export it as MP4 (H.264, portrait, no audio), replace the files in `public/media/video/`, and update the chapter times and words in `BUILD_VIDEO`.
+
+Showing several clips from Instagram, TikTok or YouTube needs a reel section, which is not built yet. It needs the clips as files first.
 
 ## Known limits
 
 - Checked in headless Chromium at 390, 360 and 1440 px wide. It has not been tried on a physical iPhone yet, so do a thumb test before the pitch: drag gestures, video autoplay and the 3D spin are the things to watch.
 - The 3D pieces are modeled by hand from her photos. They are close, and each one is recognizable, but they are approximations. Her photos stay one tap away in every product sheet.
-- Her site hosts one video. Clips from her social accounts need to be added as files (see above).
+- Her site hosts one video, so the page has one. A reel of her social clips is not built; it needs the clips as files.
 - The newsletter field does not send anything. It points people to her store.
 
 ## Before sharing a link
