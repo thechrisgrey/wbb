@@ -1,0 +1,831 @@
+{
+ "products": {
+  "catch-it-all-tray": [
+   {
+    "base": "/media/products/catch-it-all-tray/01",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#887868"
+   },
+   {
+    "base": "/media/products/catch-it-all-tray/02",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8d8c8"
+   },
+   {
+    "base": "/media/products/catch-it-all-tray/03",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#481808"
+   },
+   {
+    "base": "/media/products/catch-it-all-tray/04",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8c8b8"
+   },
+   {
+    "base": "/media/products/catch-it-all-tray/05",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#683818"
+   },
+   {
+    "base": "/media/products/catch-it-all-tray/06",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8a878"
+   },
+   {
+    "base": "/media/products/catch-it-all-tray/07",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#f8e8d8"
+   },
+   {
+    "base": "/media/products/catch-it-all-tray/08",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8b8a8"
+   },
+   {
+    "base": "/media/products/catch-it-all-tray/09",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#c86838"
+   },
+   {
+    "base": "/media/products/catch-it-all-tray/10",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8c8b8"
+   }
+  ],
+  "the-entry-valet": [
+   {
+    "base": "/media/products/the-entry-valet/01",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#e8d8d8"
+   },
+   {
+    "base": "/media/products/the-entry-valet/02",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8c8b8"
+   },
+   {
+    "base": "/media/products/the-entry-valet/03",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#c8c8b8"
+   },
+   {
+    "base": "/media/products/the-entry-valet/04",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8d8c8"
+   },
+   {
+    "base": "/media/products/the-entry-valet/05",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#b8b8a8"
+   },
+   {
+    "base": "/media/products/the-entry-valet/06",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8d8c8"
+   },
+   {
+    "base": "/media/products/the-entry-valet/07",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#e8d8d8"
+   },
+   {
+    "base": "/media/products/the-entry-valet/08",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8d8c8"
+   },
+   {
+    "base": "/media/products/the-entry-valet/09",
+    "w": 1086,
+    "h": 1448,
+    "ratio": 0.75,
+    "color": "#e8e8d8"
+   },
+   {
+    "base": "/media/products/the-entry-valet/10",
+    "w": 1086,
+    "h": 1448,
+    "ratio": 0.75,
+    "color": "#d8c8c8"
+   }
+  ],
+  "paper-towel-holder": [
+   {
+    "base": "/media/products/paper-towel-holder/01",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#e8d8c8"
+   },
+   {
+    "base": "/media/products/paper-towel-holder/02",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8c8b8"
+   },
+   {
+    "base": "/media/products/paper-towel-holder/03",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8c8b8"
+   },
+   {
+    "base": "/media/products/paper-towel-holder/04",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#181818"
+   },
+   {
+    "base": "/media/products/paper-towel-holder/05",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8c8b8"
+   },
+   {
+    "base": "/media/products/paper-towel-holder/06",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#e8d8c8"
+   },
+   {
+    "base": "/media/products/paper-towel-holder/07",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#e8d8c8"
+   }
+  ],
+  "nightcap-bath-tray": [
+   {
+    "base": "/media/products/nightcap-bath-tray/01",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8d8d8"
+   },
+   {
+    "base": "/media/products/nightcap-bath-tray/02",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8d8d8"
+   },
+   {
+    "base": "/media/products/nightcap-bath-tray/03",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#c8b8a8"
+   },
+   {
+    "base": "/media/products/nightcap-bath-tray/04",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#c8b8a8"
+   },
+   {
+    "base": "/media/products/nightcap-bath-tray/05",
+    "w": 1086,
+    "h": 1448,
+    "ratio": 0.75,
+    "color": "#d8d8d8"
+   },
+   {
+    "base": "/media/products/nightcap-bath-tray/06",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#c8b8a8"
+   },
+   {
+    "base": "/media/products/nightcap-bath-tray/07",
+    "w": 1086,
+    "h": 1448,
+    "ratio": 0.75,
+    "color": "#d8d8d8"
+   },
+   {
+    "base": "/media/products/nightcap-bath-tray/08",
+    "w": 1086,
+    "h": 1448,
+    "ratio": 0.75,
+    "color": "#e8e8e8"
+   }
+  ],
+  "the-cornerstone-block": [
+   {
+    "base": "/media/products/the-cornerstone-block/01",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#684838"
+   },
+   {
+    "base": "/media/products/the-cornerstone-block/02",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#c8a898"
+   },
+   {
+    "base": "/media/products/the-cornerstone-block/03",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#785848"
+   },
+   {
+    "base": "/media/products/the-cornerstone-block/04",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#e8d8c8"
+   },
+   {
+    "base": "/media/products/the-cornerstone-block/05",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#a89888"
+   }
+  ],
+  "yakisugi-crane-wooden-stool": [
+   {
+    "base": "/media/products/yakisugi-crane-wooden-stool/01",
+    "w": 1600,
+    "h": 2400,
+    "ratio": 0.6667,
+    "color": "#a8a8a8"
+   },
+   {
+    "base": "/media/products/yakisugi-crane-wooden-stool/02",
+    "w": 1600,
+    "h": 2400,
+    "ratio": 0.6667,
+    "color": "#787868"
+   },
+   {
+    "base": "/media/products/yakisugi-crane-wooden-stool/03",
+    "w": 1600,
+    "h": 2400,
+    "ratio": 0.6667,
+    "color": "#181818"
+   },
+   {
+    "base": "/media/products/yakisugi-crane-wooden-stool/04",
+    "w": 1600,
+    "h": 2400,
+    "ratio": 0.6667,
+    "color": "#584838"
+   },
+   {
+    "base": "/media/products/yakisugi-crane-wooden-stool/05",
+    "w": 1600,
+    "h": 2400,
+    "ratio": 0.6667,
+    "color": "#585858"
+   },
+   {
+    "base": "/media/products/yakisugi-crane-wooden-stool/06",
+    "w": 1600,
+    "h": 2400,
+    "ratio": 0.6667,
+    "color": "#b89868"
+   },
+   {
+    "base": "/media/products/yakisugi-crane-wooden-stool/07",
+    "w": 1600,
+    "h": 2400,
+    "ratio": 0.6667,
+    "color": "#787868"
+   },
+   {
+    "base": "/media/products/yakisugi-crane-wooden-stool/08",
+    "w": 1600,
+    "h": 2400,
+    "ratio": 0.6667,
+    "color": "#181818"
+   }
+  ],
+  "the-butterfly-board": [
+   {
+    "base": "/media/products/the-butterfly-board/01",
+    "w": 1593,
+    "h": 1138,
+    "ratio": 1.3998,
+    "color": "#b8b8b8"
+   },
+   {
+    "base": "/media/products/the-butterfly-board/02",
+    "w": 1600,
+    "h": 1067,
+    "ratio": 1.4995,
+    "color": "#e8d8d8"
+   },
+   {
+    "base": "/media/products/the-butterfly-board/03",
+    "w": 1600,
+    "h": 1067,
+    "ratio": 1.4995,
+    "color": "#f8f8e8"
+   },
+   {
+    "base": "/media/products/the-butterfly-board/04",
+    "w": 1600,
+    "h": 1067,
+    "ratio": 1.4995,
+    "color": "#f8f8f8"
+   },
+   {
+    "base": "/media/products/the-butterfly-board/05",
+    "w": 1600,
+    "h": 1067,
+    "ratio": 1.4995,
+    "color": "#f8f8f8"
+   }
+  ],
+  "walnut-bench": [
+   {
+    "base": "/media/products/walnut-bench/01",
+    "w": 1440,
+    "h": 1799,
+    "ratio": 0.8004,
+    "color": "#583838"
+   },
+   {
+    "base": "/media/products/walnut-bench/02",
+    "w": 1600,
+    "h": 2408,
+    "ratio": 0.6645,
+    "color": "#281808"
+   },
+   {
+    "base": "/media/products/walnut-bench/03",
+    "w": 1600,
+    "h": 2397,
+    "ratio": 0.6675,
+    "color": "#e8e8e8"
+   },
+   {
+    "base": "/media/products/walnut-bench/04",
+    "w": 1600,
+    "h": 1065,
+    "ratio": 1.5023,
+    "color": "#e8e8e8"
+   },
+   {
+    "base": "/media/products/walnut-bench/05",
+    "w": 1600,
+    "h": 1069,
+    "ratio": 1.4967,
+    "color": "#e8e8e8"
+   },
+   {
+    "base": "/media/products/walnut-bench/06",
+    "w": 1600,
+    "h": 2400,
+    "ratio": 0.6667,
+    "color": "#482818"
+   },
+   {
+    "base": "/media/products/walnut-bench/07",
+    "w": 1600,
+    "h": 2411,
+    "ratio": 0.6636,
+    "color": "#381818"
+   }
+  ],
+  "tea-tray": [
+   {
+    "base": "/media/products/tea-tray/01",
+    "w": 1280,
+    "h": 1605,
+    "ratio": 0.7975,
+    "color": "#e8e8f8"
+   },
+   {
+    "base": "/media/products/tea-tray/02",
+    "w": 1292,
+    "h": 1616,
+    "ratio": 0.7995,
+    "color": "#e8e8f8"
+   }
+  ],
+  "brass-filter-holder": [
+   {
+    "base": "/media/products/brass-filter-holder/01",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#d8d8d8"
+   },
+   {
+    "base": "/media/products/brass-filter-holder/02",
+    "w": 1600,
+    "h": 1062,
+    "ratio": 1.5066,
+    "color": "#d8d8e8"
+   },
+   {
+    "base": "/media/products/brass-filter-holder/03",
+    "w": 1600,
+    "h": 1062,
+    "ratio": 1.5066,
+    "color": "#d8d8d8"
+   },
+   {
+    "base": "/media/products/brass-filter-holder/04",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#d8d8d8"
+   },
+   {
+    "base": "/media/products/brass-filter-holder/05",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#d8d8e8"
+   },
+   {
+    "base": "/media/products/brass-filter-holder/06",
+    "w": 1585,
+    "h": 1586,
+    "ratio": 0.9994,
+    "color": "#d8d8d8"
+   },
+   {
+    "base": "/media/products/brass-filter-holder/07",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#e8e8f8"
+   }
+  ],
+  "office-tray": [
+   {
+    "base": "/media/products/office-tray/01",
+    "w": 1600,
+    "h": 1062,
+    "ratio": 1.5066,
+    "color": "#d8d8e8"
+   },
+   {
+    "base": "/media/products/office-tray/02",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#c8c8d8"
+   },
+   {
+    "base": "/media/products/office-tray/03",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#e8e8e8"
+   },
+   {
+    "base": "/media/products/office-tray/04",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#d8d8e8"
+   },
+   {
+    "base": "/media/products/office-tray/05",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#e8e8e8"
+   },
+   {
+    "base": "/media/products/office-tray/06",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#e8d8e8"
+   }
+  ],
+  "stashbox": [
+   {
+    "base": "/media/products/stashbox/01",
+    "w": 1600,
+    "h": 2133,
+    "ratio": 0.7501,
+    "color": "#d8d8d8"
+   },
+   {
+    "base": "/media/products/stashbox/02",
+    "w": 1600,
+    "h": 2133,
+    "ratio": 0.7501,
+    "color": "#f8f8e8"
+   },
+   {
+    "base": "/media/products/stashbox/03",
+    "w": 1080,
+    "h": 1920,
+    "ratio": 0.5625,
+    "color": "#f8f8f8"
+   },
+   {
+    "base": "/media/products/stashbox/04",
+    "w": 1600,
+    "h": 2133,
+    "ratio": 0.7501,
+    "color": "#f8f8e8"
+   },
+   {
+    "base": "/media/products/stashbox/05",
+    "w": 1600,
+    "h": 2133,
+    "ratio": 0.7501,
+    "color": "#f8f8f8"
+   },
+   {
+    "base": "/media/products/stashbox/06",
+    "w": 1600,
+    "h": 2133,
+    "ratio": 0.7501,
+    "color": "#c8c8c8"
+   }
+  ],
+  "walnut-tray": [
+   {
+    "base": "/media/products/walnut-tray/01",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#381808"
+   },
+   {
+    "base": "/media/products/walnut-tray/02",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#d8a878"
+   },
+   {
+    "base": "/media/products/walnut-tray/03",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#481808"
+   },
+   {
+    "base": "/media/products/walnut-tray/04",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#381808"
+   },
+   {
+    "base": "/media/products/walnut-tray/05",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#885838"
+   },
+   {
+    "base": "/media/products/walnut-tray/06",
+    "w": 1122,
+    "h": 1402,
+    "ratio": 0.8003,
+    "color": "#f8e8d8"
+   }
+  ],
+  "walnut-serving-tray": [
+   {
+    "base": "/media/products/walnut-serving-tray/01",
+    "w": 1555,
+    "h": 2329,
+    "ratio": 0.6677,
+    "color": "#c8b8b8"
+   },
+   {
+    "base": "/media/products/walnut-serving-tray/02",
+    "w": 1600,
+    "h": 1068,
+    "ratio": 1.4981,
+    "color": "#e8e8f8"
+   },
+   {
+    "base": "/media/products/walnut-serving-tray/03",
+    "w": 1600,
+    "h": 1068,
+    "ratio": 1.4981,
+    "color": "#281818"
+   },
+   {
+    "base": "/media/products/walnut-serving-tray/04",
+    "w": 1600,
+    "h": 1049,
+    "ratio": 1.5253,
+    "color": "#381818"
+   }
+  ],
+  "walnut-bath-tray": [
+   {
+    "base": "/media/products/walnut-bath-tray/01",
+    "w": 1600,
+    "h": 1198,
+    "ratio": 1.3356,
+    "color": "#c8c8b8"
+   },
+   {
+    "base": "/media/products/walnut-bath-tray/02",
+    "w": 1557,
+    "h": 2100,
+    "ratio": 0.7414,
+    "color": "#a89878"
+   },
+   {
+    "base": "/media/products/walnut-bath-tray/03",
+    "w": 1561,
+    "h": 2112,
+    "ratio": 0.7391,
+    "color": "#b8a898"
+   },
+   {
+    "base": "/media/products/walnut-bath-tray/04",
+    "w": 1548,
+    "h": 2104,
+    "ratio": 0.7357,
+    "color": "#987858"
+   },
+   {
+    "base": "/media/products/walnut-bath-tray/05",
+    "w": 1600,
+    "h": 2842,
+    "ratio": 0.563,
+    "color": "#e8d8d8"
+   },
+   {
+    "base": "/media/products/walnut-bath-tray/06",
+    "w": 1600,
+    "h": 901,
+    "ratio": 1.7758,
+    "color": "#f8f8f8"
+   },
+   {
+    "base": "/media/products/walnut-bath-tray/07",
+    "w": 1600,
+    "h": 1143,
+    "ratio": 1.3998,
+    "color": "#d8c8b8"
+   }
+  ],
+  "the-snack-tray": [
+   {
+    "base": "/media/products/the-snack-tray/01",
+    "w": 1585,
+    "h": 1942,
+    "ratio": 0.8162,
+    "color": "#d8d8d8"
+   },
+   {
+    "base": "/media/products/the-snack-tray/02",
+    "w": 1170,
+    "h": 1751,
+    "ratio": 0.6682,
+    "color": "#281818"
+   },
+   {
+    "base": "/media/products/the-snack-tray/03",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#d8d8d8"
+   },
+   {
+    "base": "/media/products/the-snack-tray/04",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#e8e8e8"
+   },
+   {
+    "base": "/media/products/the-snack-tray/05",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#482818"
+   }
+  ],
+  "the-chelsea-tray": [
+   {
+    "base": "/media/products/the-chelsea-tray/01",
+    "w": 1528,
+    "h": 1528,
+    "ratio": 1,
+    "color": "#c8c8c8"
+   },
+   {
+    "base": "/media/products/the-chelsea-tray/02",
+    "w": 1585,
+    "h": 1588,
+    "ratio": 0.9981,
+    "color": "#e8e8e8"
+   },
+   {
+    "base": "/media/products/the-chelsea-tray/03",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#583828"
+   },
+   {
+    "base": "/media/products/the-chelsea-tray/04",
+    "w": 1585,
+    "h": 2388,
+    "ratio": 0.6637,
+    "color": "#f8f8f8"
+   }
+  ]
+ },
+ "maker": {
+  "fanfix": {
+   "base": "/media/maker/fanfix",
+   "w": 1320,
+   "h": 1056,
+   "ratio": 1.25,
+   "color": "#98a8b8"
+  },
+  "instagram": {
+   "base": "/media/maker/instagram",
+   "w": 1600,
+   "h": 1280,
+   "ratio": 1.25,
+   "color": "#a8a898"
+  },
+  "x": {
+   "base": "/media/maker/x",
+   "w": 1070,
+   "h": 856,
+   "ratio": 1.25,
+   "color": "#080818"
+  },
+  "snapchat": {
+   "base": "/media/maker/snapchat",
+   "w": 1319,
+   "h": 1056,
+   "ratio": 1.2491,
+   "color": "#485858"
+  },
+  "kick": {
+   "base": "/media/maker/kick",
+   "w": 1600,
+   "h": 1280,
+   "ratio": 1.25,
+   "color": "#d8d8d8"
+  },
+  "discord": {
+   "base": "/media/maker/discord",
+   "w": 684,
+   "h": 548,
+   "ratio": 1.2482,
+   "color": "#e8e8e8"
+  }
+ }
+}

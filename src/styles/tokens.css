@@ -1,0 +1,62 @@
+/* WoodBaby design tokens. Palette is hers: cream, near-black, burnt orange, plus brass and walnut from the work. */
+:root {
+  /* color */
+  --cream: #ece7d8;
+  --paper: #f4efe2;
+  --butter: #eee5c1;
+  --ink: #16130f;
+  --ink-soft: #2b251e;
+  --orange: #e0722c;
+  --orange-deep: #c25a1b;
+  --brass: #c9a04a;
+  --walnut: #4b2e1c;
+  --char: #1b1714;
+  --blush: #f1c9b3;
+  --line: rgba(22, 19, 15, 0.16);
+  --line-light: rgba(244, 239, 226, 0.22);
+  --scrim: rgba(22, 19, 15, 0.55);
+
+  /* type families */
+  --f-display: 'Titan One', 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --f-sans: 'Bricolage Grotesque Variable', 'Helvetica Neue', Arial, sans-serif;
+  --f-serif: 'Instrument Serif', 'Times New Roman', serif;
+  --f-mono: 'DM Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* type scale, tuned for a 390px screen first */
+  --t-mega: clamp(4.6rem, 27vw, 15rem);
+  --t-hero: clamp(3.1rem, 15.5vw, 9rem);
+  --t-h1: clamp(2.5rem, 11.5vw, 6.4rem);
+  --t-h2: clamp(1.9rem, 8.2vw, 4.2rem);
+  --t-h3: clamp(1.35rem, 5.6vw, 2.2rem);
+  --t-lede: clamp(1.08rem, 4.5vw, 1.45rem);
+  --t-body: clamp(0.98rem, 4vw, 1.1rem);
+  --t-small: 0.84rem;
+  --t-cap: 0.68rem;
+
+  /* space */
+  --gutter: clamp(16px, 4.8vw, 40px);
+  --gap: clamp(10px, 3vw, 20px);
+  --section-y: clamp(72px, 18vw, 180px);
+  --max: 1280px;
+
+  /* shape */
+  --r-xl: 34px;
+  --r-lg: 24px;
+  --r-md: 16px;
+  --r-sm: 10px;
+  --r-pill: 999px;
+  --tile-shadow: 0.055em 0.07em 0 var(--ink);
+
+  /* motion */
+  --e-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --e-inout: cubic-bezier(0.76, 0, 0.24, 1);
+  --e-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* chrome */
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --dock-h: 58px;
+  --z-dock: 60;
+  --z-sheet: 80;
+  --z-loader: 100;
+}
