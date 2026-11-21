@@ -65,7 +65,7 @@ const DEVICES = {
     await page.waitForTimeout(900);
     const height = await page.evaluate(() => document.documentElement.scrollHeight);
     const max = Math.max(0, height - d.height);
-    const positions = stepsArg.includes(',') ? stepsArg.split(',').map(Number) : Array.from({ length: +stepsArg }, (_, i, a) => Math.round((max * i) / Math.max(1, a.length - 1)));
+    const positions = stepsArg.includes(',') ? stepsArg.split(',').map(Number) : Array.from({ length: +stepsArg }, (_, i) => Math.round((max * i) / Math.max(1, +stepsArg - 1)));
     console.log('pageHeight', height, 'viewport', `${d.width}x${d.height}`, 'positions', positions.join(','));
     let cur = 0;
     for (const [i, y] of positions.entries()) {
