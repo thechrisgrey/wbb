@@ -197,6 +197,7 @@ export function init(root, ctx) {
 
     // if the bar is stuck, bring the top of the grid back under it
     const top = sentinel.getBoundingClientRect().top;
+    const shift = top < -2 ? top : 0; // how far the page is about to scroll
     if (top < -2) {
       const y = window.scrollY + top;
       if (motion) gsap.to(window, { scrollTo: { y, autoKill: true }, duration: 0.75, ease: 'wb.inout' });
@@ -218,13 +219,16 @@ export function init(root, ctx) {
     grid.style.minHeight = `${Math.max(h0, grid.offsetHeight)}px`;
     // pieces arriving from hiding must be fully drawn: Flip brings them in
     list.forEach((c) => !before.has(c) && finish(c));
+    // pieces that will land on screen but were never revealed (they sat below the fold) open as they arrive
+    const vh = window.innerHeight;
+    reveal(list.filter((c) => !c.shown && c.el.getBoundingClientRect().top - shift < vh * 0.95).map((c) => c.el));
     flip = Flip.from(state, {
-      duration: 0.8,
-      ease: 'wb.inout',
-      stagger: 0.025,
+      duration: 0.85,
+      ease: 'wb.out',
+      stagger: 0.02,
       absolute: true,
       simple: true,
-      onEnter: (els) => gsap.fromTo(els, { autoAlpha: 0, scale: 0.82, y: 30 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.7, delay: 0.25, stagger: 0.04, ease: 'wb.out' }),
+      onEnter: (els) => gsap.fromTo(els, { autoAlpha: 0, scale: 0.82, y: 30 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.7, delay: 0.12, stagger: 0.04, ease: 'wb.out' }),
       onLeave: (els) => gsap.to(els, { autoAlpha: 0, scale: 0.82, duration: 0.35, ease: 'power2.in' }),
       onComplete: () => {
         gsap.set(cards.map((c) => c.el), { clearProps: 'opacity,visibility,transform' });

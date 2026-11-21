@@ -399,22 +399,22 @@
     padding-bottom: 120px;
   }
   .s-maker__plate--main {
-    width: 56%;
-    margin-left: 8%;
+    width: 44%;
+    margin-left: 12%;
   }
   .s-maker__plate--face {
-    top: -60px;
-    right: 8%;
-    width: 26%;
+    top: -40px;
+    right: 14%;
+    width: 22%;
   }
   .s-maker__plate--hand {
-    right: 4%;
-    width: 30%;
+    right: 8%;
+    width: 25%;
   }
   .s-maker__seal {
-    left: 2%;
-    bottom: 140px;
-    width: 180px;
+    left: 5%;
+    bottom: 120px;
+    width: 170px;
   }
   .s-maker__deckwrap .wrap,
   .s-maker__ctrl {
