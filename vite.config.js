@@ -26,9 +26,9 @@ export default defineConfig(({ command }) => ({
   build: {
     target: 'es2020',
     assetsInlineLimit: 2048,
+    // three.js is only reached through a dynamic import (src/app.js), so it lands in its own lazy chunk.
     rollupOptions: {
       input: command === 'build' ? { main: resolve('index.html') } : undefined,
-      output: { manualChunks: { three: ['three'], gsap: ['gsap'] } },
     },
   },
 }));
