@@ -266,7 +266,7 @@ export function build({ wood = 'rosewood' } = {}) {
 
   // Where the plank is cut from the species texture. One tile spans the whole length, so the figure never mirrors
   // on itself, and the strip is placed to leave a lens of pale sapwood along the slit-side edge at the far end.
-  const GRAIN = { tile: [-L / 0.98, 0.29], offset: [0.51, 0.515] };
+  const GRAIN = { tile: [-L / 0.98, 0.29], offset: [0.51, 0.555] };
   const plank = woodSlab(
     {
       outline: { pts, edge: (j) => tags[j] },
