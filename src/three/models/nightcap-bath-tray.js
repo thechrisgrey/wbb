@@ -18,12 +18,11 @@ const rad = (deg) => (deg * Math.PI) / 180;
  *  - blind recesses (holes with `depth`) that get real walls and a floor,
  *  - optional mitred edges (`miter: 1` is a 45 degree undercut),
  *  - wood UVs that wrap over the eased edges, so the grain on top carries on down the sides without a seam.
- * Plan points are [x, z] in metres; the slab spans y = 0 .. T. Returns a non-indexed BufferGeometry with one
+ * Plan points are [x, z] in metres; the slab spans y = 0 .. T; grain runs along x. Returns a non-indexed BufferGeometry with one
  * geometry group per `group` index used (0 = body).
  */
-function easedSlab({ outline, holes = [], T, size = 0.5, offset = [0, 0] }) {
-  const su = size;
-  const sv = size * 0.5;
+function easedSlab({ outline, holes = [], T, tile = [0.5, 0.25], offset = [0, 0] }) {
+  const [su, sv] = tile; // metres of wood per texture tile along / across the grain (negative flips)
   const buckets = [];
   const bucket = (g) => (buckets[g] ||= { pos: [], nor: [], uv: [] });
   const tri = (g, a, b, c) => {
@@ -150,7 +149,7 @@ function easedSlab({ outline, holes = [], T, size = 0.5, offset = [0, 0] }) {
         const [x, z] = rings[k][i];
         const h = T - y;
         const uv = e.end
-          ? [y / (su * 0.35) + offset[0], (z * o[0] - x * o[1]) / (su * 0.175) + offset[1]] // end grain: tighter, turned
+          ? [y / (sv * 0.7) + offset[0], (z * o[0] - x * o[1]) / (sv * 0.35) + offset[1]] // end grain: tighter, turned
           : planUV(x + o[0] * h, z + o[1] * h); // long grain: the top's pattern folded down over the edge
         return { p: [x, y, z], n: [o[0] * pr.nh, pr.ny, o[1] * pr.nh], uv };
       };
@@ -265,9 +264,9 @@ export function build({ wood = 'rosewood' } = {}) {
     ...arc(slotX + slotL / 2 - rr, slotZ - slotW / 2 + rr, rr, rad(270), rad(360), 5),
   ];
 
-  // Where the plank is cut from the species texture: this strip puts one lens of pale sapwood on the slot-side edge
-  // beside the coaster (the slot runs through it, as in her photos) and keeps the rest dark and figured.
-  const GRAIN = { size: 0.56, offset: [0.932, 1.495] };
+  // Where the plank is cut from the species texture. One tile spans the whole length, so the figure never mirrors
+  // on itself, and the strip is placed to leave a lens of pale sapwood along the slit-side edge at the far end.
+  const GRAIN = { tile: [-L / 0.98, 0.29], offset: [0.51, 0.515] };
   const plank = woodSlab(
     {
       outline: { pts, edge: (j) => tags[j] },
