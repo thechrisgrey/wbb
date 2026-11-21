@@ -1,0 +1,260 @@
+/* custom: commissions, and a toy. Flat orange field, a very large headline, her eight letter tiles in a play tray.
+   Without the script (or with reduced motion) the tiles sit in a tidy two-row "Wood / Baby"; `.is-live` makes them throwable. */
+.s-custom {
+  --ts: 78px; /* tile size, set from the tray width by the script */
+  padding-block: clamp(28px, 8vw, 72px) clamp(88px, 24vw, 180px);
+  overflow: hidden;
+  overflow: clip;
+}
+.s-custom__in {
+  position: relative;
+}
+
+/* ---------- captions ---------- */
+.s-custom__top {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--gap);
+  padding-bottom: 12px;
+  border-bottom: 1.5px solid var(--ink);
+}
+
+/* ---------- headline ---------- */
+.s-custom__title {
+  margin-top: clamp(40px, 12vw, 96px);
+}
+.s-custom__lead {
+  display: block;
+  font-size: clamp(2.3rem, 10.6vw, 5.4rem);
+}
+.s-custom__lead .t-serif {
+  font-size: 1.14em;
+  line-height: 0.8;
+  letter-spacing: -0.02em;
+}
+.s-custom .s-custom__big {
+  display: block;
+  width: max-content;
+  margin: 0.06em 0 0 -0.03em;
+  font-size: var(--fs-big, 16.4vw);
+  line-height: 0.92;
+  white-space: nowrap;
+}
+.s-custom__ch {
+  display: inline-block;
+}
+
+/* ---------- the tray ---------- */
+.s-custom__play {
+  margin-top: clamp(36px, 10vw, 72px);
+}
+.s-custom__bar,
+.s-custom__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+}
+.s-custom__bar {
+  margin-bottom: 12px;
+}
+.s-custom__hint {
+  font-size: 0.74rem;
+}
+.s-custom__tidy {
+  min-height: 44px;
+  padding: 0 1.05em;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    inset 0 0 0 1.5px var(--ink),
+    3px 4px 0 var(--ink);
+  transition: translate 0.25s var(--e-out), box-shadow 0.25s var(--e-out);
+}
+.s-custom__tidy:active {
+  translate: 2px 3px;
+  box-shadow:
+    inset 0 0 0 1.5px var(--ink),
+    1px 1px 0 var(--ink);
+}
+.s-custom__tidy-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+.s-custom__tidy[aria-pressed='true'] .s-custom__tidy-dot {
+  background: var(--ink);
+}
+.s-custom__meta {
+  margin-top: 12px;
+  opacity: 0.7;
+}
+.s-custom__meta b {
+  font-weight: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.s-custom__area {
+  position: relative;
+  border-radius: var(--r-lg);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+  /* tidy layout (no script / reduced motion): Wood over Baby */
+  padding: calc(var(--ts) * 0.5) 0;
+}
+.s-custom__tiles {
+  display: grid;
+  grid-template-columns: repeat(4, var(--ts));
+  justify-content: center;
+  gap: 12px 8px;
+}
+.s-custom__tile {
+  width: var(--ts);
+  height: var(--ts);
+}
+.s-custom__tile .tile {
+  width: 100%;
+  height: 100%;
+  box-shadow:
+    inset 0 0 0 2.5px var(--ink),
+    4px 5px 0 var(--ink);
+}
+.s-custom__tile .tile--paper {
+  --tile-bg: var(--paper);
+}
+
+/* small registration marks in the tray corners: the poster discipline, and a hint that this is a frame to play in */
+.s-custom__corner {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+}
+.s-custom__corner::before,
+.s-custom__corner::after {
+  content: '';
+  position: absolute;
+  background: var(--ink);
+}
+.s-custom__corner::before {
+  left: 4px;
+  top: 0;
+  width: 1.5px;
+  height: 100%;
+}
+.s-custom__corner::after {
+  top: 4px;
+  left: 0;
+  height: 1.5px;
+  width: 100%;
+}
+.s-custom__corner--tl {
+  top: 16px;
+  left: 16px;
+}
+.s-custom__corner--tr {
+  top: 16px;
+  right: 16px;
+}
+.s-custom__corner--bl {
+  bottom: 16px;
+  left: 16px;
+}
+.s-custom__corner--br {
+  bottom: 16px;
+  right: 16px;
+}
+
+/* live: a fixed-height tray, tiles positioned by transform */
+.s-custom.is-live .s-custom__area {
+  height: var(--area-h, clamp(360px, 54svh, 520px));
+  padding: 0;
+  overflow: hidden;
+  overflow: clip;
+  touch-action: pan-y;
+}
+.s-custom.is-live .s-custom__tiles {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.s-custom.is-live .s-custom__tile {
+  position: absolute;
+  left: 0;
+  top: 0;
+  touch-action: none;
+  cursor: grab;
+  will-change: transform;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.s-custom.is-live .s-custom__tile:active {
+  cursor: grabbing;
+}
+.s-custom.is-live .s-custom__tile .tile {
+  will-change: transform;
+}
+
+/* ---------- body and the way in ---------- */
+.s-custom__foot {
+  margin-top: clamp(40px, 11vw, 80px);
+  display: grid;
+  gap: 26px;
+}
+.s-custom__body {
+  max-width: 24em;
+}
+.s-custom__act {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px 14px;
+}
+.s-custom__cta {
+  --btn-hover: var(--paper);
+  min-height: 56px;
+  padding: 0 1.5em;
+  font-size: 1.06rem;
+}
+.s-custom .s-custom__sticker {
+  background: var(--butter);
+  font-size: 0.98rem;
+  box-shadow:
+    inset 0 0 0 2px var(--ink),
+    3px 4px 0 var(--ink);
+  rotate: 5deg;
+}
+
+@media (min-width: 900px) {
+  .s-custom__in {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    column-gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+  .s-custom__top {
+    grid-column: 1 / -1;
+  }
+  .s-custom__title {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .s-custom__lead {
+    font-size: clamp(2.6rem, 4.4vw, 4.6rem);
+  }
+  .s-custom__foot {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
+  }
+  .s-custom__play {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    margin-top: clamp(40px, 12vw, 96px);
+  }
+  .s-custom.is-live .s-custom__area {
+    height: var(--area-h, 540px);
+  }
+}

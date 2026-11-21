@@ -1,0 +1,81 @@
+/* Preloader: her WB badge stamps onto an ink field while the hero video warms up, then the field lifts like a curtain. */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loader);
+  display: grid;
+  place-items: center;
+  color: var(--paper);
+  overflow: hidden;
+  pointer-events: all;
+  contain: strict;
+}
+.loader__field {
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+}
+.loader__cap {
+  position: absolute;
+  top: calc(var(--safe-t) + 18px);
+  opacity: 0.7;
+}
+.loader__cap--tl {
+  left: var(--gutter);
+}
+.loader__cap--tr {
+  right: var(--gutter);
+}
+.loader__badge {
+  position: relative;
+  width: min(62vw, 300px);
+  aspect-ratio: 1932 / 1212;
+  margin-top: -8svh;
+}
+.loader__badge svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.loader__line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% + min(22vw, 106px));
+  text-align: center;
+  font-size: clamp(1.4rem, 6.4vw, 2.2rem);
+  color: var(--butter);
+}
+.loader__count {
+  position: absolute;
+  left: var(--gutter);
+  bottom: calc(var(--safe-b) + 34px);
+  font-size: clamp(5.4rem, 31vw, 13rem);
+  color: var(--orange);
+  overflow: hidden;
+  line-height: 0.84;
+  padding-top: 0.06em;
+}
+.loader__count span {
+  display: block;
+}
+.loader__bar {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: calc(var(--safe-b) + 18px);
+  height: 3px;
+  background: var(--line-light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.loader__bar span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left center;
+}

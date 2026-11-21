@@ -1,0 +1,32 @@
+<nav class="dock" id="dock" aria-label="Primary">
+  <a class="dock__home" href="#hero" data-dock-to="0" aria-label="WoodBaby, back to top"><span class="dock__badge" data-dock-badge></span></a>
+  <a class="dock__link" href="#catalog" data-dock-to="#catalog">Shop <sup class="dock__count" data-dock-count>17</sup></a>
+  <a class="dock__link" href="#spin" data-dock-to="#spin">Spin</a>
+  <button class="dock__menu" type="button" data-menu-open aria-haspopup="dialog" aria-controls="menu" aria-expanded="false">
+    <span class="dock__bars" aria-hidden="true"><i></i><i></i></span>
+    <span class="sr-only">Menu</span>
+  </button>
+  <span class="dock__progress" aria-hidden="true"><i data-dock-progress></i></span>
+</nav>
+
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <div class="menu__field"></div>
+  <div class="menu__inner">
+    <header class="menu__top">
+      <p class="t-cap">WoodBaby · Goods &amp; Wares</p>
+      <button class="menu__close" type="button" data-menu-close aria-label="Close menu">Close</button>
+    </header>
+    <ul class="menu__links">
+      <li><a href="#catalog" data-menu-to="#catalog"><span class="t-cap">01</span><span class="menu__word">Shop all</span></a></li>
+      <li><a href="#spin" data-menu-to="#spin"><span class="t-cap">02</span><span class="menu__word">Spin room</span></a></li>
+      <li><a href="#rooms" data-menu-to="#rooms"><span class="t-cap">03</span><span class="menu__word">The rooms</span></a></li>
+      <li><a href="#maker" data-menu-to="#maker"><span class="t-cap">04</span><span class="menu__word">The maker</span></a></li>
+      <li><a href="#custom" data-menu-to="#custom"><span class="t-cap">05</span><span class="menu__word">Custom work</span></a></li>
+      <li><a href="#socials" data-menu-to="#socials"><span class="t-cap">06</span><span class="menu__word">Socials</span></a></li>
+    </ul>
+    <footer class="menu__foot">
+      <a class="btn" href="https://woodbabybuilds.com/collections/shop-all-1" target="_blank" rel="noopener">woodbabybuilds.com <span class="btn__arrow">↗</span></a>
+      <p class="t-cap menu__note">Handmade in Nashville, TN</p>
+    </footer>
+  </div>
+</div>

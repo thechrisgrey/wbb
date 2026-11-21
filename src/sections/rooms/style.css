@@ -1,0 +1,627 @@
+/* Rooms: her three collections as three full-screen sheets that stack.
+   Each sheet sticks to the top of the screen; the next one slides up over it while the one beneath sinks back and dims.
+   Mobile first (390 wide). The sheet is as tall as the large viewport so its colour always reaches the bottom of the
+   screen, while the content inside is laid out in 100svh so nothing ever sits under the browser bar or the dock. */
+.s-rooms {
+  --rm-clear: calc(var(--dock-h) + var(--safe-b) + 24px); /* kept free for the dock */
+  --rm-dwell: 46svh; /* how long a sheet rests before the next one starts to cover it */
+  --rm-tk: clamp(78px, 12.6svh, 118px); /* height of one piece ticket */
+  --rm-r: 28px;
+}
+
+/* ---------- intro ---------- */
+.s-rooms__intro {
+  padding-top: clamp(64px, 17vw, 150px);
+  padding-bottom: clamp(36px, 10vw, 84px);
+}
+.s-rooms__eyebrow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line-light);
+}
+.s-rooms__h {
+  margin-top: clamp(20px, 6vw, 44px);
+  font-size: clamp(4.4rem, 24.6vw, 13rem);
+}
+.s-rooms__h-line {
+  display: block;
+}
+.s-rooms__sub {
+  margin-top: 0.42em;
+  font-size: clamp(1.5rem, 7.3vw, 2.9rem);
+  line-height: 1.02;
+  opacity: 0.78;
+}
+
+/* ---------- the stack ---------- */
+.s-rooms__stack {
+  position: relative;
+}
+.s-rooms__panel {
+  --rm-bg: var(--ink);
+  --rm-fg: var(--paper);
+  --rm-tile: var(--ink-soft);
+  --rm-rule: var(--line-light);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 100vh;
+  height: 100lvh;
+  background: var(--ink);
+  overflow: clip;
+}
+.s-rooms__panel--bath {
+  --rm-bg: var(--butter);
+  --rm-fg: var(--ink);
+  --rm-tile: var(--paper);
+  --rm-rule: rgba(22, 19, 15, 0.2);
+  z-index: 2;
+}
+.s-rooms__panel--home {
+  z-index: 3;
+}
+.s-rooms__dwell {
+  height: var(--rm-dwell);
+}
+.s-rooms__dwell--last {
+  height: calc(var(--rm-dwell) * 0.6);
+}
+
+.s-rooms__card {
+  position: relative;
+  height: 100%;
+  border-radius: var(--rm-r) var(--rm-r) 0 0;
+  background: var(--rm-bg);
+  color: var(--rm-fg);
+  overflow: hidden;
+  transform-origin: 50% 0;
+}
+.s-rooms__in {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  height: 100svh;
+  padding: max(12px, var(--safe-t)) 0 var(--rm-clear);
+}
+.s-rooms__panel--bath .s-rooms__in {
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+}
+.s-rooms__dim {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: var(--ink);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- top bar: story segments and two captions ---------- */
+.s-rooms__bar {
+  padding-inline: var(--gutter);
+}
+.s-rooms__segs {
+  display: flex;
+  gap: 4px;
+}
+.s-rooms__segs i {
+  flex: 1;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--rm-rule);
+  overflow: hidden;
+}
+.s-rooms__segs b {
+  display: block;
+  height: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.s-rooms__panel--kitchen .s-rooms__segs i:nth-child(-n + 1) b,
+.s-rooms__panel--bath .s-rooms__segs i:nth-child(-n + 2) b,
+.s-rooms__panel--home .s-rooms__segs i:nth-child(-n + 3) b {
+  transform: none;
+}
+.s-rooms__where {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* ---------- stage: photo, numeral, sticker ---------- */
+.s-rooms__stage {
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+}
+.s-rooms__shot {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+}
+.s-rooms__photo {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-lg);
+}
+.s-rooms__photo > img {
+  will-change: transform;
+}
+.s-rooms__open {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-lg);
+  -webkit-touch-callout: none;
+}
+.s-rooms__tag {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+  max-width: calc(100% - 20px);
+  min-height: 28px;
+  padding: 0 11px 0 10px;
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.6rem;
+  white-space: nowrap;
+}
+.s-rooms__tag > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.s-rooms__tag-no {
+  opacity: 0.55;
+}
+.s-rooms__badge {
+  position: absolute;
+  z-index: 1;
+  background: var(--butter);
+  font-size: 0.98rem;
+  box-shadow:
+    inset 0 0 0 2px var(--ink),
+    3px 4px 0 var(--ink);
+}
+
+/* the room numeral: two digit windows, each a short column that rolls */
+.s-rooms__num {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  color: var(--orange);
+  font-size: 37vw;
+  line-height: 1;
+  letter-spacing: 0;
+  pointer-events: none;
+}
+.s-rooms__dig {
+  display: block;
+  height: 1em;
+  overflow: clip;
+}
+.s-rooms__dig + .s-rooms__dig {
+  margin-left: -0.035em;
+}
+.s-rooms__col {
+  display: block;
+}
+.s-rooms__col > span {
+  display: block;
+  height: 1em;
+  line-height: 1;
+}
+
+/* ---------- type ---------- */
+.s-rooms__type {
+  padding-inline: var(--gutter);
+  margin-top: 14px;
+}
+.s-rooms__kicker {
+  font-size: clamp(2.1rem, 10.7vw, 4.4rem);
+  line-height: 1;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+}
+.s-rooms__title {
+  margin-top: 0.07em;
+  font-size: clamp(2.3rem, 11.4vw, 6rem);
+  white-space: nowrap;
+}
+.s-rooms .s-rooms__ln-mask {
+  /* room for italic descenders inside the reveal clip */
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+.s-rooms__blurb {
+  font-size: 0.86rem;
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+}
+.s-rooms__more {
+  display: none;
+}
+
+/* ---------- action row ---------- */
+.s-rooms__act {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-inline: var(--gutter);
+  margin-top: 14px;
+}
+.s-rooms__cta {
+  min-height: 48px;
+  padding-inline: 1.2em;
+  font-size: 0.98rem;
+}
+.s-rooms__meter {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+}
+.s-rooms__idx {
+  display: inline-flex;
+  gap: 0.5em;
+}
+.s-rooms__idx b {
+  display: inline-block;
+  font-weight: 500;
+}
+.s-rooms__idx span {
+  opacity: 0.55;
+}
+.s-rooms__rail {
+  width: 40px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--rm-rule);
+  overflow: hidden;
+}
+.s-rooms__rail i {
+  display: block;
+  height: 100%;
+  background: currentColor;
+  transform-origin: left center;
+}
+
+/* ---------- the strip of pieces: drag sideways, scroll the page vertically ---------- */
+.s-rooms__strip {
+  margin-top: 12px;
+  padding-left: var(--gutter);
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.s-rooms__track {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  width: max-content;
+  padding-right: var(--gutter);
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+  will-change: transform;
+}
+.s-rooms__cell {
+  flex: none;
+}
+.s-rooms__piece {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 11px;
+  width: clamp(204px, 58vw, 264px);
+  height: var(--rm-tk);
+  padding: 6px 12px 6px 6px;
+  border-radius: 16px;
+  background: var(--rm-tile);
+  color: inherit;
+  text-align: left;
+  -webkit-touch-callout: none;
+}
+.s-rooms__thumb {
+  display: block;
+  height: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 11px;
+}
+.s-rooms__meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding-block: 3px 2px;
+}
+.s-rooms__no {
+  opacity: 0.58;
+}
+.s-rooms__name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: 0.97rem;
+  font-weight: 660;
+  font-stretch: 84%;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+}
+.s-rooms__piece--all {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  width: clamp(150px, 41vw, 190px);
+  padding: 10px 14px 9px 14px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--rm-rule);
+}
+.s-rooms__piece--all .s-rooms__meta {
+  height: 100%;
+  padding: 0;
+}
+.s-rooms__go {
+  font-size: 1.25rem;
+  line-height: 1;
+  padding-bottom: 1px;
+}
+
+/* ================= 01 kitchen: photo runs edge to edge, numeral bites into its top-left corner ================= */
+.s-rooms__panel--kitchen .s-rooms__where {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+.s-rooms__panel--kitchen .s-rooms__stage {
+  margin-top: clamp(14px, 3.2svh, 30px);
+}
+.s-rooms__panel--kitchen .s-rooms__shot {
+  max-height: 104vw;
+}
+.s-rooms__panel--kitchen .s-rooms__photo,
+.s-rooms__panel--kitchen .s-rooms__open {
+  border-radius: 0;
+}
+.s-rooms__panel--kitchen .s-rooms__photo > img {
+  object-position: 64% 50%;
+}
+.s-rooms__panel--kitchen .s-rooms__num {
+  left: calc(var(--gutter) - 0.045em);
+  top: 0;
+  translate: 0 -53%;
+}
+.s-rooms__panel--kitchen .s-rooms__badge {
+  right: 14px;
+  bottom: -13px;
+  rotate: 5deg;
+}
+
+/* ================= 02 bed + bath: butter field, type first, portrait bleeding off the right ================= */
+.s-rooms__panel--bath .s-rooms__type {
+  margin-top: clamp(12px, 2.4svh, 24px);
+}
+.s-rooms__panel--bath .s-rooms__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr);
+  gap: 12px;
+  padding-left: var(--gutter);
+  margin-top: clamp(12px, 2.2svh, 22px);
+}
+.s-rooms__side {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+}
+.s-rooms__panel--bath .s-rooms__num {
+  position: relative;
+  font-size: 32vw;
+  margin: -0.15em 0 0 -0.05em;
+}
+.s-rooms__panel--bath .s-rooms__photo,
+.s-rooms__panel--bath .s-rooms__open {
+  border-radius: var(--r-lg) 0 0 var(--r-lg);
+}
+.s-rooms__panel--bath .s-rooms__photo > img {
+  object-position: 62% 56%;
+}
+.s-rooms__panel--bath .s-rooms__badge {
+  right: 16px;
+  top: -12px;
+  rotate: 6deg;
+  background: var(--ink);
+  color: var(--butter);
+  box-shadow: none;
+}
+
+/* ================= 03 home + furniture: a doorway, everything centred, numeral split behind it ================= */
+.s-rooms__panel--home .s-rooms__stage {
+  display: grid;
+  place-items: center;
+  margin-top: clamp(12px, 2svh, 20px);
+}
+.s-rooms__panel--home .s-rooms__shot {
+  z-index: 1;
+  width: 58vw;
+}
+.s-rooms__panel--home .s-rooms__photo,
+.s-rooms__panel--home .s-rooms__open {
+  border-radius: 29vw 29vw 20px 20px;
+}
+.s-rooms__panel--home .s-rooms__photo > img {
+  object-position: 50% 62%;
+}
+.s-rooms__panel--home .s-rooms__num {
+  inset: 0;
+  z-index: 0;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 1.5vw;
+  font-size: 46vw;
+}
+.s-rooms__panel--home .s-rooms__dig + .s-rooms__dig {
+  margin-left: 0;
+}
+.s-rooms__panel--home .s-rooms__tag {
+  left: 50%;
+  translate: -50% 0;
+}
+.s-rooms__panel--home .s-rooms__badge {
+  right: -22px;
+  top: 34%;
+  rotate: 7deg;
+}
+.s-rooms__panel--home .s-rooms__type {
+  text-align: center;
+}
+.s-rooms__panel--home .s-rooms__blurb {
+  margin-top: 8px;
+  opacity: 0.8;
+}
+
+/* very short screens (small Android with the URL bar showing): give the photo the room */
+@media (max-height: 620px) {
+  .s-rooms__panel--home .s-rooms__blurb {
+    display: none;
+  }
+  .s-rooms__kicker {
+    font-size: clamp(1.9rem, 9.4vw, 4rem);
+  }
+}
+
+/* ---------- desktop: keep it tidy ---------- */
+@media (min-width: 900px) {
+  .s-rooms {
+    --rm-tk: clamp(96px, 13svh, 128px);
+  }
+  .s-rooms__h {
+    font-size: clamp(6rem, 13vw, 13rem);
+  }
+  .s-rooms__in {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+    column-gap: clamp(28px, 4vw, 64px);
+    padding: clamp(20px, 3svh, 36px) var(--gutter) var(--rm-clear);
+    max-width: calc(var(--max) + 160px);
+    margin-inline: auto;
+  }
+  .s-rooms__panel--bath .s-rooms__in {
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+  .s-rooms__bar,
+  .s-rooms__type,
+  .s-rooms__act,
+  .s-rooms__strip {
+    grid-column: 2;
+    padding-inline: 0;
+  }
+  .s-rooms__bar {
+    grid-row: 1;
+  }
+  .s-rooms__type {
+    grid-row: 2;
+    align-self: end;
+    margin-top: 0;
+  }
+  .s-rooms__act {
+    grid-row: 3;
+    margin-top: 26px;
+  }
+  .s-rooms__strip {
+    grid-row: 4 / span 2;
+    margin-top: 22px;
+    border-radius: 16px;
+  }
+  .s-rooms__stage,
+  .s-rooms__panel--kitchen .s-rooms__stage,
+  .s-rooms__panel--home .s-rooms__stage {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    margin-top: 0;
+  }
+  .s-rooms__panel--bath .s-rooms__bar,
+  .s-rooms__panel--bath .s-rooms__type,
+  .s-rooms__panel--bath .s-rooms__act,
+  .s-rooms__panel--bath .s-rooms__strip {
+    grid-column: 1;
+  }
+  .s-rooms__panel--bath .s-rooms__stage {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    grid-template-columns: minmax(0, 0.5fr) minmax(0, 1fr);
+    gap: 24px;
+    padding-left: 0;
+    margin-top: 0;
+  }
+  .s-rooms__kicker {
+    font-size: clamp(2.6rem, 4.6vw, 4.6rem);
+  }
+  .s-rooms__title {
+    font-size: clamp(3rem, 6.2vw, 6.2rem);
+  }
+  .s-rooms__num,
+  .s-rooms__panel--bath .s-rooms__num {
+    font-size: clamp(9rem, 15vw, 15rem);
+  }
+  .s-rooms__panel--home .s-rooms__num {
+    font-size: clamp(10rem, 17vw, 17rem);
+    padding-inline: 0;
+  }
+  .s-rooms__blurb {
+    max-width: 46ch;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  .s-rooms__more {
+    display: inline;
+  }
+  .s-rooms__panel--kitchen .s-rooms__where {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .s-rooms__panel--kitchen .s-rooms__shot {
+    max-height: none;
+  }
+  .s-rooms__panel--kitchen .s-rooms__photo,
+  .s-rooms__panel--kitchen .s-rooms__open,
+  .s-rooms__panel--bath .s-rooms__photo,
+  .s-rooms__panel--bath .s-rooms__open {
+    border-radius: var(--r-lg);
+  }
+  .s-rooms__panel--kitchen .s-rooms__num {
+    left: -0.04em;
+    top: auto;
+    bottom: 0;
+    translate: -4% 22%;
+  }
+  .s-rooms__panel--home .s-rooms__shot {
+    width: min(100%, 52svh);
+  }
+  .s-rooms__panel--home .s-rooms__photo,
+  .s-rooms__panel--home .s-rooms__open {
+    border-radius: 26svh 26svh 24px 24px;
+  }
+  .s-rooms__panel--home .s-rooms__type {
+    text-align: left;
+  }
+  .s-rooms__piece {
+    width: 264px;
+  }
+  .s-rooms__tag {
+    font-size: var(--t-cap);
+    min-height: 32px;
+  }
+}

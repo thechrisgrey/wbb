@@ -1,0 +1,387 @@
+/* Reset, document defaults and the shared primitives every section uses. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  background: var(--cream);
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--f-sans);
+  font-size: var(--t-body);
+  font-weight: 430;
+  line-height: 1.45;
+  letter-spacing: -0.008em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+  overscroll-behavior-y: none;
+}
+
+body.is-locked {
+  overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+ul,
+ol {
+  list-style: none;
+}
+img,
+video,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+img {
+  height: auto;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+::selection {
+  background: var(--orange);
+  color: var(--ink);
+}
+
+/* ---------- layout ---------- */
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.section {
+  position: relative;
+}
+.section--pad {
+  padding-block: var(--section-y);
+}
+.on-ink {
+  background: var(--ink);
+  color: var(--paper);
+}
+.on-orange {
+  background: var(--orange);
+  color: var(--ink);
+}
+.on-paper {
+  background: var(--paper);
+}
+
+/* ---------- type ---------- */
+.t-display {
+  font-family: var(--f-display);
+  font-weight: 400;
+  line-height: 0.86;
+  letter-spacing: -0.015em;
+  text-transform: lowercase;
+}
+.t-mega {
+  font-size: var(--t-mega);
+}
+.t-hero {
+  font-size: var(--t-hero);
+}
+.t-h1 {
+  font-family: var(--f-sans);
+  font-size: var(--t-h1);
+  font-weight: 600;
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+}
+.t-h2 {
+  font-family: var(--f-sans);
+  font-size: var(--t-h2);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+.t-h3 {
+  font-family: var(--f-sans);
+  font-size: var(--t-h3);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+}
+.t-serif {
+  font-family: var(--f-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.t-lede {
+  font-size: var(--t-lede);
+  line-height: 1.3;
+  font-weight: 450;
+  letter-spacing: -0.02em;
+}
+.t-cap {
+  font-family: var(--f-mono);
+  font-size: var(--t-cap);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.t-num {
+  font-family: var(--f-display);
+  font-variant-numeric: tabular-nums;
+  line-height: 0.8;
+  letter-spacing: -0.03em;
+}
+.u-orange {
+  color: var(--orange);
+}
+.u-dim {
+  opacity: 0.62;
+}
+
+/* SplitText line masks: lines slide up from behind their own clip. */
+.split-mask {
+  overflow: clip;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--paper);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: 52px;
+  padding: 0 1.35em;
+  border-radius: var(--r-pill);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--f-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.5s var(--e-out);
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--btn-hover, var(--orange));
+  transform: translateY(101%);
+  transition: transform 0.55s var(--e-out);
+}
+.btn:active {
+  transform: scale(0.96);
+}
+@media (hover: hover) {
+  .btn:hover::before {
+    transform: translateY(0);
+  }
+  .btn:hover {
+    color: var(--ink);
+  }
+}
+.btn--orange {
+  --btn-bg: var(--orange);
+  --btn-fg: var(--ink);
+  --btn-hover: var(--paper);
+}
+.btn--paper {
+  --btn-bg: var(--paper);
+  --btn-fg: var(--ink);
+}
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: currentColor;
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+.btn__arrow {
+  display: inline-block;
+  transition: transform 0.5s var(--e-out);
+}
+@media (hover: hover) {
+  .btn:hover .btn__arrow {
+    transform: translateX(4px);
+  }
+}
+
+/* ---------- chips, tags, stickers ---------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 36px;
+  padding: 0 0.95em;
+  border-radius: var(--r-pill);
+  box-shadow: inset 0 0 0 1.5px currentColor;
+  font-family: var(--f-mono);
+  font-size: var(--t-cap);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.chip[aria-pressed='true'],
+.chip.is-active {
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: none;
+}
+.sticker {
+  display: inline-grid;
+  place-items: center;
+  padding: 0.5em 0.85em 0.42em;
+  border-radius: var(--r-sm);
+  background: var(--orange);
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: 1.05rem;
+  line-height: 1;
+  box-shadow: 3px 4px 0 var(--ink);
+  rotate: -4deg;
+}
+
+/* Letter tile: one of her wordmark glyphs on a solid square, used for the kinetic masthead. */
+.tile {
+  --tile-bg: var(--butter);
+  --tile-fg: var(--ink);
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  aspect-ratio: 1;
+  border-radius: 14%;
+  background: var(--tile-bg);
+  color: var(--tile-fg);
+  box-shadow:
+    inset 0 0 0 2px var(--ink),
+    4px 5px 0 var(--ink);
+}
+.tile svg {
+  display: block;
+  width: 68%;
+  height: 68%;
+  min-width: 0;
+  overflow: visible;
+}
+.tile path {
+  fill: currentColor;
+}
+.tile--orange {
+  --tile-bg: var(--orange);
+}
+.tile--ink {
+  --tile-bg: var(--ink);
+  --tile-fg: var(--butter);
+}
+.tile--brass {
+  --tile-bg: var(--brass);
+}
+.tile--blush {
+  --tile-bg: var(--blush);
+}
+
+/* ---------- media ---------- */
+.media {
+  position: relative;
+  overflow: hidden;
+  background: var(--ph, #d9d2c0);
+  border-radius: var(--r-lg);
+}
+.media > img,
+.media > video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- page glue ---------- */
+/* The manifesto rises over the pinned hero: it overlaps the last screen of the hero's pin,
+   so its orange field arrives as a hard-edged wipe and its own pin starts the moment it reaches the top.
+   The hero adds .is-pinned only when it pins (not under reduced motion). */
+.s-hero.is-pinned + .s-manifesto {
+  position: relative;
+  z-index: 2;
+  margin-top: -100svh;
+}
+
+/* ---------- helpers ---------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.no-js-hide {
+  visibility: hidden;
+}
+html.is-ready .no-js-hide {
+  visibility: visible;
+}
+[hidden] {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

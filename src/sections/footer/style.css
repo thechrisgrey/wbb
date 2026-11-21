@@ -1,0 +1,262 @@
+/* footer: a bright sign-off on cream. Tagline and badge, two columns of links, then her wordmark gutter to gutter.
+   Everything reads as plain content without the script; the script builds the wordmark and adds the motion. */
+.s-footer {
+  --f-dock-zone: calc(var(--dock-h) + var(--safe-b) + 32px);
+  background: var(--cream);
+  color: var(--ink);
+  padding-top: clamp(26px, 7vw, 56px);
+  padding-bottom: var(--f-dock-zone);
+  overflow: hidden;
+  overflow: clip;
+}
+
+/* ---------- corner captions ---------- */
+.s-footer__caps {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--gap);
+  padding-bottom: 12px;
+  border-bottom: 1.5px solid var(--ink);
+}
+.s-footer__caps p:first-child {
+  white-space: nowrap;
+}
+.s-footer__caps p + p {
+  max-width: 9em;
+}
+.s-footer__caps p + p {
+  text-align: right;
+}
+
+/* ---------- sign-off ---------- */
+.s-footer__sign {
+  position: relative;
+  margin-top: clamp(34px, 10vw, 72px);
+}
+.s-footer .s-footer__tag {
+  font-size: clamp(3rem, 14.6vw, 8.6rem);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+.s-footer__tag .t-serif {
+  display: block;
+  font-size: 1.16em;
+  line-height: 0.86;
+  letter-spacing: -0.02em;
+}
+.s-footer__badge {
+  position: absolute;
+  right: -4px;
+  top: 1.04em;
+  width: clamp(104px, 29vw, 240px);
+  aspect-ratio: 1932 / 1212;
+  font-size: clamp(3rem, 14.6vw, 8.6rem);
+  rotate: -7deg;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.s-footer__badge svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ---------- actions ---------- */
+.s-footer__acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(28px, 8vw, 48px);
+}
+.s-footer__act {
+  display: block;
+}
+.s-footer__up {
+  display: inline-block;
+}
+
+/* ---------- link columns ---------- */
+.s-footer__cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 clamp(14px, 4.6vw, 40px);
+  margin-top: clamp(48px, 13vw, 96px);
+}
+.s-footer__col {
+  min-width: 0;
+}
+.s-footer__head {
+  position: relative;
+  display: flex;
+  gap: 0.9em;
+  padding-bottom: 12px;
+}
+.s-footer__head span {
+  opacity: 0.5;
+}
+.s-footer__head--2 {
+  margin-top: 30px;
+}
+.s-footer__head::after,
+.s-footer__list li::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--line);
+  transform: scaleX(var(--rule, 1));
+  transform-origin: 0 50%;
+}
+.s-footer__head::after {
+  height: 1.5px;
+  background: var(--ink);
+}
+.s-footer__list li {
+  position: relative;
+}
+.s-footer__list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 46px;
+  overflow: hidden;
+  overflow: clip;
+  font-size: clamp(0.98rem, 4.1vw, 1.12rem);
+  font-weight: 530;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.s-footer__list a > span,
+.s-footer__list a > i {
+  display: block;
+}
+.s-footer__list a > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.s-footer__list a > i {
+  flex: none;
+  font-style: normal;
+  font-size: 0.82em;
+  opacity: 0.45;
+  transition:
+    opacity 0.35s var(--e-out),
+    translate 0.45s var(--e-out);
+}
+.s-footer__list a:active > i {
+  opacity: 1;
+  color: var(--orange);
+  translate: 2px -2px;
+}
+@media (hover: hover) {
+  .s-footer__list a:hover > i {
+    opacity: 1;
+    color: var(--orange);
+    translate: 2px -2px;
+  }
+}
+
+/* ---------- the wordmark ---------- */
+.s-footer__mark {
+  position: relative;
+  margin-top: clamp(84px, 25vw, 170px);
+  padding-inline: clamp(8px, 2.4vw, 32px);
+}
+.s-footer__word {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 1241 / 275;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.s-footer__fallback {
+  display: block;
+  font-size: 24vw;
+  line-height: 1;
+  text-transform: none;
+}
+.s-footer__l {
+  position: absolute;
+}
+.s-footer__drop,
+.s-footer__body,
+.s-footer__glyph {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.s-footer__body {
+  cursor: grab;
+}
+.s-footer__glyph {
+  transform-origin: 50% 100%;
+  overflow: visible;
+}
+.s-footer__glyph path {
+  fill: var(--ink);
+}
+/* the shelf the letters land on: a hairline at her baseline, edge to edge */
+.s-footer__floor {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  /* baseline of the lettering, as a share of the word box, inside the padded mark */
+  top: calc(84.4% - 0.75px);
+  height: 1.5px;
+  background: var(--ink);
+  transform-origin: 0 50%;
+}
+
+/* ---------- legal ---------- */
+.s-footer__legal {
+  display: grid;
+  gap: 6px;
+  margin-top: clamp(26px, 7vw, 48px);
+}
+.s-footer__note {
+  opacity: 0.55;
+}
+
+@media (min-width: 900px) {
+  .s-footer__in {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    column-gap: clamp(40px, 6vw, 120px);
+    align-items: start;
+  }
+  .s-footer__caps {
+    grid-column: 1 / -1;
+  }
+  .s-footer__sign {
+    grid-column: 1;
+    margin-top: 64px;
+  }
+  .s-footer__acts {
+    grid-column: 1;
+  }
+  .s-footer__cols {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    margin-top: 72px;
+  }
+  .s-footer .s-footer__tag {
+    font-size: clamp(3rem, 7.4vw, 8.6rem);
+  }
+  .s-footer__badge {
+    width: clamp(118px, 13vw, 200px);
+    right: 4%;
+  }
+  .s-footer__legal {
+    grid-template-columns: 1fr auto;
+  }
+}

@@ -1,0 +1,53 @@
+<section class="section s-hero" data-section="hero" id="hero" aria-label="WoodBaby, absurdly well made">
+  <div class="s-hero__pin">
+    <!-- Final layout. The video frame and the letter tiles fly into these slots as you scroll. -->
+    <div class="s-hero__stage">
+      <div class="s-hero__row">
+        <div class="s-hero__side" aria-hidden="true">
+          <div class="s-hero__stack" data-hero-stack></div>
+          <div class="s-hero__chap" data-hero-chap>
+            <p class="s-hero__num t-num"><span data-hero-num>01</span></p>
+            <p class="t-cap s-hero__chapcap"><span data-hero-chapword>Cut</span><span>of 07</span></p>
+          </div>
+        </div>
+        <div class="s-hero__slot" data-hero-slot aria-hidden="true"></div>
+      </div>
+      <div class="s-hero__copy">
+        <p class="s-hero__sub t-serif" data-hero-sub>functional art</p>
+        <h1 class="s-hero__title t-display" data-hero-title>
+          <span class="s-hero__line"><span>absurdly</span></span>
+          <span class="s-hero__line"><span>well made.</span></span>
+        </h1>
+        <p class="s-hero__lede" data-hero-lede>Bold, handmade wood goods for the home — statement objects for every room, made by the woman you watch make them.</p>
+        <div class="s-hero__actions" data-hero-actions>
+          <span class="s-hero__act"><a class="btn btn--orange" href="https://woodbabybuilds.com/collections/shop-all-1" target="_blank" rel="noopener">Shop the goods <span class="btn__arrow">→</span></a></span>
+          <span class="s-hero__act"><button type="button" class="btn btn--ghost" data-hero-piece>Spin the stool</button></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Her build video, played as a story. Starts full bleed. -->
+    <div class="s-hero__frame" data-hero-frame>
+      <video class="s-hero__video" data-hero-video muted playsinline loop preload="auto" poster="media/video/build-poster.webp" aria-label="WoodBaby building the Yakisugi Crane Stool: cutting, joinery, charring, painting the crane"></video>
+      <div class="s-hero__scrim" aria-hidden="true"></div>
+      <div class="s-hero__bars" data-hero-bars aria-hidden="true"></div>
+      <p class="s-hero__word t-display" data-hero-word aria-live="polite"></p>
+      <p class="s-hero__meta t-cap" data-hero-meta><span>Nº 01</span><span>Yakisugi Crane Stool</span></p>
+      <button type="button" class="s-hero__zone s-hero__zone--prev" data-hero-zone="-1" aria-label="Previous chapter"></button>
+      <button type="button" class="s-hero__zone s-hero__zone--next" data-hero-zone="1" aria-label="Next chapter"></button>
+      <button type="button" class="s-hero__play" data-hero-play hidden><span class="sticker">Tap to play</span></button>
+    </div>
+
+    <header class="s-hero__top" data-hero-top>
+      <p class="t-cap">WoodBaby · Goods &amp; Wares</p>
+      <p class="t-cap" data-hero-count>01 / 07</p>
+    </header>
+
+    <!-- The masthead: her wordmark as letter tiles. Ghost cells mark where the tiles sit at the start. -->
+    <div class="s-hero__mast" data-hero-mast aria-hidden="true"></div>
+    <div class="s-hero__tiles" data-hero-tiles aria-hidden="true"></div>
+    <p class="sr-only">WoodBaby</p>
+
+    <p class="s-hero__cue t-cap" data-hero-cue aria-hidden="true"><span>Scroll</span><i></i></p>
+  </div>
+</section>

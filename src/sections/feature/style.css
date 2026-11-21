@@ -1,0 +1,512 @@
+/* Feature: the Nightcap Bath Tray as a short product film driven by the thumb.
+   Two layouts share one DOM:
+   - default (no JS, reduced motion, very short screens): a simple stack of photos and copy;
+   - .is-film (added by index.js): a pinned 100svh stage where the photos become one camera pulling back. */
+
+.s-feature {
+  --clear: calc(var(--dock-h) + var(--safe-b) + 24px); /* the dock's zone at the bottom of the screen */
+  --u: 1vw; /* one percent of the stage width; becomes a container unit in the film */
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ---------- copy block (both layouts) ---------- */
+.s-feature .s-feature__kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6em;
+}
+.s-feature .s-feature__sep {
+  opacity: 0.4;
+}
+.s-feature .s-feature__title {
+  margin-top: 12px;
+  font-weight: 400;
+}
+.s-feature .s-feature__lead {
+  display: block;
+  font-size: calc(var(--u) * 7);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+}
+.s-feature .s-feature__lead > span {
+  display: block;
+  overflow: clip;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.s-feature .s-feature__lead > span > span {
+  display: block;
+}
+.s-feature .s-feature__punch {
+  display: block;
+  margin-top: 0.02em;
+  margin-left: -0.03em;
+  font-size: calc(var(--u) * 19.6);
+  line-height: 0.92;
+  white-space: nowrap;
+}
+.s-feature .s-feature__char {
+  display: inline-block;
+  will-change: transform;
+}
+.s-feature .s-feature__body {
+  margin-top: 14px;
+  font-size: clamp(0.94rem, calc(var(--u) * 4.05), 1.08rem);
+  line-height: 1.42;
+  text-wrap: pretty;
+}
+.s-feature .s-feature__actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+.s-feature .s-feature__shop {
+  width: 100%;
+  justify-content: space-between;
+  padding-inline: 1.5em 1.3em;
+}
+.s-feature .s-feature__more {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.s-feature .s-feature__spin {
+  min-height: 48px;
+  padding-inline: 1.05em 1.25em;
+  gap: 0.55em;
+}
+.s-feature .s-feature__spin svg {
+  flex: none;
+}
+.s-feature .s-feature__room {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  min-height: 48px;
+  padding-inline: 0.5em 0.25em;
+  font-weight: 640;
+  font-stretch: 88%;
+  letter-spacing: -0.01em;
+}
+.s-feature .s-feature__room > span:first-child {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1.5px no-repeat;
+  padding-bottom: 3px;
+}
+.s-feature .s-feature__room-arrow {
+  display: inline-block;
+  transition: transform 0.5s var(--e-out);
+}
+@media (hover: hover) {
+  .s-feature .s-feature__room:hover .s-feature__room-arrow {
+    transform: translateX(4px);
+  }
+}
+.s-feature .s-feature__price {
+  position: absolute;
+  top: 0;
+  right: var(--gutter);
+  z-index: 2;
+  padding: 0.34em 0.5em 0.26em;
+  font-size: clamp(2rem, calc(var(--u) * 10.6), 3.1rem);
+  letter-spacing: -0.01em;
+  box-shadow: 4px 5px 0 var(--ink);
+  translate: 0 -64%;
+  rotate: -7deg;
+}
+
+/* ---------- stacked layout: no pin, everything visible ---------- */
+.s-feature:not(.is-film) .s-feature__stage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  max-width: 760px;
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+.s-feature:not(.is-film) .s-feature__film {
+  display: contents;
+}
+.s-feature:not(.is-film) .s-feature__shot {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background: var(--ph, #d9d2c0);
+  aspect-ratio: 4 / 5;
+  order: 3;
+}
+.s-feature:not(.is-film) .s-feature__shot--wide {
+  grid-column: 1 / -1;
+  order: 1;
+}
+.s-feature:not(.is-film) .s-feature__shot--mid {
+  grid-column: 1 / -1;
+  aspect-ratio: 5 / 4;
+  order: 4;
+}
+.s-feature:not(.is-film) .s-feature__shot--lift,
+.s-feature:not(.is-film) .s-feature__shadow,
+.s-feature:not(.is-film) .s-feature__ring,
+.s-feature:not(.is-film) .s-feature__phrases,
+.s-feature:not(.is-film) .s-feature__hud,
+.s-feature:not(.is-film) .s-feature__cue,
+.s-feature:not(.is-film) .s-feature__index,
+.s-feature:not(.is-film) .s-feature__notes {
+  display: none;
+}
+.s-feature:not(.is-film) .s-feature__world {
+  position: absolute;
+  inset: 0;
+}
+.s-feature:not(.is-film) .s-feature__world img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.s-feature:not(.is-film) .s-feature__panel {
+  position: relative;
+  grid-column: 1 / -1;
+  order: 2;
+  padding-block: 26px 22px;
+}
+@media (min-width: 900px) {
+  .s-feature:not(.is-film) {
+    --u: 7.6px;
+  }
+}
+
+/* ---------- the film ---------- */
+.s-feature.is-film {
+  /* the film runs to the bottom of the large viewport (toolbar hidden); this absorbs its overhang when the pin lets go */
+  padding-bottom: calc(100vh - 100svh);
+  padding-bottom: calc(100lvh - 100svh);
+}
+.s-feature.is-film .s-feature__pin {
+  position: relative;
+  height: 100svh;
+  background: var(--paper);
+}
+.s-feature.is-film .s-feature__stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin-inline: auto;
+  container-type: inline-size;
+}
+@supports (width: 1cqw) {
+  .s-feature.is-film .s-feature__stage {
+    --u: 1cqw;
+  }
+}
+.s-feature.is-film .s-feature__film {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100lvh;
+  overflow: hidden;
+  overflow: clip;
+  contain: layout paint;
+}
+.s-feature.is-film .s-feature__shot,
+.s-feature.is-film .s-feature__shadow {
+  position: absolute;
+  inset: 0;
+}
+.s-feature.is-film .s-feature__world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+  background: var(--ph, #d9d2c0);
+}
+.s-feature.is-film .s-feature__world img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+/* the hard offset shadow of her badge, under the brass coaster when it floats on the paper */
+.s-feature .s-feature__shadow {
+  background: var(--ink);
+}
+.s-feature .s-feature__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.s-feature .s-feature__ring path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+/* film titles: big type on paper strips, so they read on the paper and on any frame */
+.s-feature .s-feature__phrase {
+  position: absolute;
+  left: var(--gutter);
+  z-index: 3;
+  display: grid;
+  justify-items: start;
+  gap: 0;
+  font-family: var(--f-sans);
+  font-size: calc(var(--u) * 16.6);
+  font-weight: 760;
+  font-stretch: 78%;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  pointer-events: none;
+}
+.s-feature .s-feature__phrase--1 {
+  top: calc(var(--safe-t) + 10svh);
+}
+.s-feature .s-feature__phrase--2 {
+  bottom: calc(var(--clear) + 3svh);
+}
+.s-feature .s-feature__strip {
+  display: block;
+  margin-left: -0.14em;
+  padding: 0.07em 0.16em 0.11em 0.14em;
+  background: var(--paper);
+  overflow: hidden;
+  overflow: clip;
+  will-change: clip-path;
+}
+.s-feature .s-feature__strip + .s-feature__strip {
+  margin-top: -0.035em;
+}
+.s-feature .s-feature__strip > span {
+  display: block;
+  will-change: transform;
+}
+.s-feature .s-feature__strip em {
+  font-family: var(--f-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-size: 1.12em;
+  line-height: 0.75;
+  letter-spacing: -0.02em;
+  padding-right: 0.06em;
+}
+
+/* corner captions */
+.s-feature .s-feature__hud {
+  position: absolute;
+  top: calc(var(--safe-t) + 14px);
+  left: var(--gutter);
+  right: var(--gutter);
+  z-index: 4;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.s-feature .s-feature__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  height: 30px;
+  padding: 0 13px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--paper);
+  line-height: 1;
+  white-space: nowrap;
+}
+.s-feature .s-feature__of {
+  opacity: 0.55;
+  margin-left: -0.25em;
+}
+.s-feature .s-feature__roll {
+  display: block;
+  height: 1em;
+  overflow: hidden;
+  overflow: clip;
+}
+.s-feature .s-feature__roll > span {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+.s-feature .s-feature__roll i {
+  display: block;
+  height: 1em;
+  font-style: normal;
+}
+.s-feature .s-feature__fav {
+  margin-top: 1px;
+  padding: 0.62em 0.85em 0.5em;
+  font-size: 0.82rem;
+  box-shadow: 3px 4px 0 var(--ink);
+  rotate: 4deg;
+  white-space: nowrap;
+}
+.s-feature .s-feature__cue,
+.s-feature .s-feature__index {
+  position: absolute;
+  bottom: calc(var(--clear) + 4px);
+  z-index: 1;
+  pointer-events: none;
+}
+.s-feature .s-feature__cue {
+  left: var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+}
+.s-feature .s-feature__cue span {
+  display: inline-block;
+  animation: s-feature-nudge 1.6s var(--e-inout) infinite;
+}
+.s-feature .s-feature__index {
+  right: var(--gutter);
+}
+@keyframes s-feature-nudge {
+  0%,
+  100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+/* notes pinned to a point on the piece: a ring marker, a short leader, a label */
+.s-feature .s-feature__notes {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.s-feature .s-feature__note {
+  --lead: 34px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+.s-feature .s-feature__note i {
+  position: absolute;
+  top: -7px;
+  left: -7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow:
+    inset 0 0 0 2.5px var(--paper),
+    0 0 0 1.5px var(--ink);
+}
+.s-feature .s-feature__note b {
+  position: absolute;
+  left: -1px;
+  width: 2px;
+  height: calc(var(--lead) - 7px);
+  background: var(--paper);
+  box-shadow: 0 0 0 1px var(--ink);
+}
+.s-feature .s-feature__note span {
+  position: absolute;
+  left: 0;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 13px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--paper);
+  line-height: 1;
+  white-space: nowrap;
+}
+/* label below the point */
+.s-feature .s-feature__note--1 b {
+  top: 7px;
+  transform-origin: 50% 0;
+}
+.s-feature .s-feature__note--1 span {
+  top: var(--lead);
+  translate: -50% 0;
+  transform-origin: 50% 0;
+}
+/* label above the point */
+.s-feature .s-feature__note--2 b,
+.s-feature .s-feature__note--3 b {
+  bottom: 7px;
+  transform-origin: 50% 100%;
+}
+.s-feature .s-feature__note--2 span,
+.s-feature .s-feature__note--3 span {
+  bottom: var(--lead);
+}
+.s-feature .s-feature__note--2 span {
+  translate: -50% 0;
+  transform-origin: 50% 100%;
+}
+.s-feature .s-feature__note--3 span {
+  translate: -34px 0;
+  transform-origin: 34px 100%;
+}
+
+/* the last frame: a sheet of paper that slides up under the wide shot */
+.s-feature.is-film .s-feature__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  padding: 20px var(--gutter) var(--clear);
+  background: var(--paper);
+  will-change: transform;
+}
+.s-feature.is-film .s-feature__panel::after {
+  /* keeps the sheet solid down to the bottom of the large viewport */
+  content: '';
+  position: absolute;
+  top: calc(100% - 1px);
+  left: 0;
+  right: 0;
+  height: calc(100vh - 100svh + 2px);
+  height: calc(100lvh - 100svh + 2px);
+  background: var(--paper);
+}
+
+/* short phones: tighten the last frame so the photo keeps its room */
+@media (max-height: 780px) {
+  .s-feature.is-film .s-feature__panel {
+    padding-top: 16px;
+  }
+  .s-feature.is-film .s-feature__title {
+    margin-top: 9px;
+  }
+  .s-feature.is-film .s-feature__lead {
+    font-size: calc(var(--u) * 6.2);
+  }
+  .s-feature.is-film .s-feature__punch {
+    font-size: calc(var(--u) * 17.6);
+  }
+  .s-feature.is-film .s-feature__body {
+    margin-top: 10px;
+    line-height: 1.36;
+  }
+  .s-feature.is-film .s-feature__actions {
+    gap: 8px;
+    margin-top: 12px;
+  }
+}
+
+/* desktop: the film keeps its phone proportions in the middle of the paper */
+@media (min-width: 900px) {
+  .s-feature.is-film .s-feature__stage {
+    width: min(100%, 50svh);
+  }
+}

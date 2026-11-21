@@ -1,0 +1,45 @@
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet__backdrop" data-sheet-close></div>
+  <div class="sheet__panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title" tabindex="-1">
+    <header class="sheet__bar" data-sheet-grab>
+      <span class="sheet__grip" aria-hidden="true"></span>
+      <p class="sheet__index t-cap" data-sheet-index></p>
+      <div class="sheet__nav">
+        <button type="button" class="sheet__round" data-sheet-prev aria-label="Previous piece">←</button>
+        <button type="button" class="sheet__round" data-sheet-next aria-label="Next piece">→</button>
+        <button type="button" class="sheet__round sheet__round--close" data-sheet-close aria-label="Close">✕</button>
+      </div>
+    </header>
+
+    <div class="sheet__scroll" data-sheet-scroll>
+      <div class="sheet__media" data-sheet-media>
+        <div class="sheet__photos" data-sheet-photos>
+          <div class="sheet__bars" data-sheet-bars></div>
+          <div class="sheet__slides" data-sheet-slides></div>
+          <button type="button" class="sheet__tap sheet__tap--prev" data-sheet-photo="-1" aria-label="Previous photo"></button>
+          <button type="button" class="sheet__tap sheet__tap--next" data-sheet-photo="1" aria-label="Next photo"></button>
+        </div>
+        <div class="sheet__stage" data-sheet-stage hidden>
+          <div class="sheet__stage-num t-num" data-sheet-num aria-hidden="true"></div>
+          <div class="sheet__stage-host" data-sheet-host></div>
+          <p class="sheet__stage-hint t-cap">Drag to rotate · Pinch to zoom</p>
+          <div class="sheet__woods" data-sheet-woods></div>
+        </div>
+        <div class="sheet__modes" data-sheet-modes role="tablist" aria-label="View">
+          <button type="button" role="tab" data-sheet-mode="photos" aria-selected="true">Photos</button>
+          <button type="button" role="tab" data-sheet-mode="3d" aria-selected="false">Spin 360°</button>
+        </div>
+      </div>
+
+      <div class="sheet__body" data-sheet-body></div>
+    </div>
+
+    <footer class="sheet__buy">
+      <div class="sheet__price">
+        <span class="t-cap" data-sheet-price-cap>From</span>
+        <strong class="t-num" data-sheet-price></strong>
+      </div>
+      <a class="btn btn--orange sheet__cta" data-sheet-cta target="_blank" rel="noopener">Buy on woodbabybuilds.com <span class="btn__arrow">↗</span></a>
+    </footer>
+  </div>
+</div>
