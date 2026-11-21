@@ -256,6 +256,7 @@ export function init(root, ctx) {
 
   // Keyboard: whatever card takes focus comes to the front.
   const onFocus = (e) => {
+    if (!e.target.matches?.(':focus-visible')) return; // a tap also focuses the link; only keyboard focus steers
     const card = e.target.closest?.('.s-socials__card');
     if (card) goTo(Number(card.dataset.i), 0.5);
   };
