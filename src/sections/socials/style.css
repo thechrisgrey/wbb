@@ -2,7 +2,7 @@
    then the other platforms as chips and the newsletter on an orange panel. Mobile first (390 wide). */
 .s-socials {
   --so-card-w: min(68vw, 340px);
-  --so-gap: clamp(12px, 3.4vw, 22px);
+  --so-gap: clamp(10px, 2.6vw, 22px);
   --so-r: 22px;
   padding-top: clamp(72px, 19vw, 160px);
   padding-bottom: calc(var(--dock-h) + var(--safe-b) + clamp(28px, 8vw, 96px));
@@ -119,6 +119,7 @@
   bottom: 8px;
   display: grid;
   gap: 10px;
+  grid-template-columns: minmax(0, 1fr);
   padding: 14px 12px 12px 16px;
   border-radius: calc(var(--so-r) - 6px);
   background: var(--paper);

@@ -16,10 +16,13 @@
   </head>
   <body>
     <main id="main"></main>
+    <!-- shared styles load in their own module first, so section CSS comes later in the cascade (as on the real page) -->
     <script type="module">
       import './src/styles/fonts.css';
       import './src/styles/tokens.css';
       import './src/styles/base.css';
+    </script>
+    <script type="module">
       import { ScrollTrigger } from './src/lib/gsap.js';
       import { ctx, initSections, markEntered, registerSheet } from './src/app.js';
 

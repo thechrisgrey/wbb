@@ -29,7 +29,7 @@ OUT = os.path.join(ROOT, 'public', 'media', 'textures')
 PX = 100  # pixels per inch in the rectified faces
 
 # Placement in inches, read by the model file (keep the two in step).
-CRANE_U0, CRANE_U1 = 2.4, 12.0  # crane texture spans this much of the leg's depth, measured from the back edge
+CRANE_U0, CRANE_U1 = 2.4, 11.75  # crane texture spans this much of the leg's depth, measured from the back edge
 CRANE_V0, CRANE_V1 = 0.0, 9.6  # and this height above the floor
 STRIP_W = 0.85  # leg thickness (the front edge strip)
 WING_U1 = 6.6  # outer face: the wing texture runs this far back from the front corner
@@ -67,8 +67,23 @@ def smoothstep(a, lo, hi):
 
 
 def blur(a, r):
-    im = Image.fromarray(a.astype(np.float32), mode='F')
-    return np.asarray(im.filter(ImageFilter.GaussianBlur(r)), dtype=np.float32)
+    """Gaussian-like blur of a float array: three passes of a box filter per axis (edges clamped)."""
+    a = a.astype(np.float32)
+    k = max(1, int(round(r * 1.2)))
+    for axis in (0, 1):
+        for _ in range(3):
+            pad = [(k + 1, k) if i == axis else (0, 0) for i in range(2)]
+            c = np.cumsum(np.pad(a, pad, mode='edge'), axis=axis)
+            hi = np.take(c, np.arange(2 * k + 1, c.shape[axis]), axis=axis)
+            lo = np.take(c, np.arange(0, c.shape[axis] - 2 * k - 1), axis=axis)
+            a = (hi - lo) / (2 * k + 1)
+    return a
+
+
+def close(a, r):
+    """Soft morphological closing with a round-ish footprint of radius about r pixels."""
+    grown = smoothstep(blur(a, r), 0.08, 0.25)
+    return 1 - smoothstep(blur(1 - grown, r), 0.08, 0.25)
 
 
 def poly_mask(shape, pts, soft=4):
@@ -83,14 +98,20 @@ def lighting(lum, paint_guess, r):
     return blur(lum * wgt, r) / np.maximum(blur(wgt, r), 1e-3)
 
 
-def finish(rgb, alpha, size_long, out, preview=None, bg=(70, 42, 26)):
+def finish(rgb, alpha, size_long, out, preview=None, bg=(70, 42, 26), pct=96):
     h, w = alpha.shape
     s = size_long / max(w, h)
     size = (int(round(w * s)), int(round(h * s)))
-    # Paint colour: white-balance so the brightest paint reads as an off-white, not as lamp-lit beige.
+    # Paint colour: white-balance so the white paint reads as an off-white, not as lamp-lit beige.
     sel = alpha > 0.8
-    ref = np.percentile(rgb[sel], 96, axis=0)
-    rgb = rgb * (np.array([243, 240, 233], np.float32) / np.maximum(ref, 1))[None, None, :]
+    ref = np.percentile(rgb[sel], pct, axis=0)
+    rgb = rgb * (np.array([238, 235, 228], np.float32) / np.maximum(ref, 1))[None, None, :]
+    # Soft knee: a stripe of direct sun on the paint would otherwise blow out; roll it off into the same white.
+    lum = rgb.mean(-1, keepdims=True)
+    knee, top = 215.0, 246.0
+    over = np.maximum(lum - knee, 0)
+    rolled = knee + (top - knee) * (1 - np.exp(-over / (top - knee)))
+    rgb = rgb * np.where(lum > knee, rolled / np.maximum(lum, 1), 1)
     rgb = np.clip(rgb, 0, 255)
     # Spread the paint colour out under the soft edge so the fringe never shows wood colour.
     a3 = (alpha > 0.5).astype(np.float32)
@@ -124,33 +145,35 @@ def crane(photo, out, preview=None):
     sat = (mx - face.min(-1)) / np.maximum(mx, 1)
 
     # Region round the bird, in inches of the cropped face (x from its left edge, y down from its top).
-    region = poly_mask((h, w), [(0.0, 3.6), (1.2, 2.2), (2.6, 2.0), (3.2, 0.25), (6.0, 0.0), (7.2, 0.9), (7.6, 2.2),
-                                (9.6, 2.6), (9.6, 9.6), (5.2, 9.6), (4.8, 8.6), (3.4, 6.8), (1.4, 5.6), (0.0, 4.4)])
+    region = poly_mask((h, w), [(0.0, 3.3), (1.2, 2.1), (1.5, 0.6), (4.2, 0.15), (5.8, 0.5), (6.6, 1.8), (9.6, 2.2),
+                                (9.6, 9.6), (6.6, 9.6), (5.6, 8.7), (3.6, 7.5), (0.6, 4.7), (0.0, 4.4)])
 
-    # Paint is lighter and much greyer than the stained wood.
-    guess = smoothstep(lum, 110, 170) * smoothstep(0.55 - sat, 0.0, 0.2) * region
-    light = lighting(lum, rank(guess, 15, np.max), 40)
+    # Paint is lighter and much greyer than the stained wood. The cleanest single cue is green against red:
+    # the stain is red-brown (g/r about 0.6), the white, grey and olive paint is near neutral (g/r 0.85 to 1).
+    gr = g / np.maximum(r, 1)
+    guess = smoothstep(gr, 0.76, 0.86) * region
+    light = lighting(lum, smoothstep(blur(guess, 6), 0.05, 0.2), 40)
     rel = lum / np.maximum(light, 20)  # 1 = like the bare wood here, paint well above
-    a_light = smoothstep(rel, 1.35, 1.9) * smoothstep(0.62 - sat, 0.0, 0.18)
-    a_grey = smoothstep(0.42 - sat, 0.0, 0.14) * smoothstep(lum, 55, 95)  # grey-green wing feathers
-    # Orange legs and beak tip: saturated, hue between red and yellow, brighter than the dark wood round the feet.
+    a_neutral = smoothstep(gr, 0.75, 0.85) * smoothstep(lum, 35, 60)
+    a_light = smoothstep(rel, 1.5, 2.1) * smoothstep(0.55 - sat, 0.0, 0.15)  # white paint in the strongest light
+    # Orange legs and beak: saturated, hue between red and yellow, brighter than the dark wood round them.
     hue_ok = (r > g) & (g > b)
     hue_pos = (g - b) / np.maximum(r - b, 1)  # 0 red .. 1 yellow
-    a_orange = hue_ok * smoothstep(hue_pos, 0.25, 0.4) * (1 - smoothstep(hue_pos, 0.75, 0.9)) * smoothstep(rel, 1.5, 2.2) * smoothstep(r, 150, 190)
-    alpha = np.maximum(np.maximum(a_light, a_grey), a_orange) * region
-    # Keep the dark linework inside the bird: close the matte (dilate then erode).
-    k = 13
-    closed = rank(rank(alpha, k, np.max), k, np.min)
-    alpha = np.maximum(alpha, closed)
-    # Drop lone specks of light grain, then soften the edge a touch.
-    alpha = np.minimum(alpha, rank(rank(alpha, 5, np.min), 5, np.max) + 0.15)
-    alpha = blur(alpha, 1.2)
-    alpha = smoothstep(alpha, 0.2, 0.8)
+    a_orange = hue_ok * smoothstep(hue_pos, 0.3, 0.42) * (1 - smoothstep(hue_pos, 0.75, 0.9)) * smoothstep(rel, 1.4, 2.0) * smoothstep(r, 140, 180)
+    alpha = np.maximum(np.maximum(a_neutral, a_light), a_orange) * region
+    # Keep the dark linework inside the bird: a soft closing (grow, then shrink back) fills thin dark strokes.
+    alpha = np.maximum(alpha, close(alpha, 5))
+    # Drop specks: anything not part of a larger painted area fades out.
+    alpha = alpha * smoothstep(blur(alpha, 4), 0.25, 0.45)
+    alpha = smoothstep(blur(alpha, 1.0), 0.25, 0.75)
 
     # Flatten the warm light: bring every pixel to the lighting of a reference, keep the paint's own shading.
     flat = face * (np.median(light[alpha > 0.5]) / np.maximum(light, 20))[:, :, None]
     flat = 0.4 * flat + 0.6 * face * (np.mean(light) / np.maximum(blur(light, 80), 20))[:, :, None]
-    finish(flat, alpha, 1024, out, preview)
+    # The last few columns sit in the shadow line of the front corner: carry the paint straight to the edge.
+    flat[:, -6:] = flat[:, -7:-6]
+    alpha[:, -6:] = alpha[:, -7:-6]
+    finish(flat, alpha, 1024, out, preview, pct=70)
 
 
 # ---------------------------------------------------------------------------------------------- wing (photo 03)
@@ -158,11 +181,22 @@ def crane(photo, out, preview=None):
 
 def wing(photo, out, preview=None):
     img = Image.open(photo).convert('RGB')
-    # Outer (charred) face: front corner at x 600, back edge at about x 1060; strong perspective (camera low and
-    # close), so the front corner's top is far above the frame. Heights 0..18 in.
-    outer = rectify(img, [(600, -858), (1080, 200), (1040, 1580), (600, 2110)], 12.0, 18.0)
-    # Front edge strip between the inner corner (x 510) and the outer corner (x 600), same heights.
-    strip = rectify(img, [(508, -858), (600, -858), (600, 2110), (512, 2110)], STRIP_W, 18.0)
+    # Outer (charred) face. The camera is low and close and the top of the front corner is out of frame, so the
+    # map is solved from four points whose places on the face are known: both bottom corners of the plank, and
+    # the wing tip and the top of the wing root at the front corner, measured on photo 01 (taken square-on enough
+    # to rectify from the plank's own corners: tip 5.55 in back and 8.39 in up, root top 6.39 in up).
+    plane = [(5.55, 8.39), (0, 6.39), (12, 0), (0, 0)]
+    photo = [(878, 997), (604, 1291), (1040, 1580), (600, 2110)]
+    c = homography(photo, plane)
+
+    def at(u, v):
+        d = c[6] * u + c[7] * v + 1
+        return ((c[0] * u + c[1] * v + c[2]) / d, (c[3] * u + c[4] * v + c[5]) / d)
+
+    quad = [at(0, 18), at(12, 18), at(12, 0), at(0, 0)]
+    outer = rectify(img, quad, 12.0, 18.0)
+    # Front edge strip between the inner corner (about x 512) and the outer corner, at the same heights.
+    strip = rectify(img, [(quad[0][0] - 92, quad[0][1]), quad[0], quad[3], (quad[3][0] - 88, quad[3][1])], STRIP_W, 18.0)
     y0, y1 = int((18 - WING_V1) * PX), int((18 - WING_V0) * PX)
     face = np.concatenate([strip[y0:y1], outer[y0:y1, : int(WING_U1 * PX)]], axis=1)
     h, w, _ = face.shape
@@ -172,23 +206,25 @@ def wing(photo, out, preview=None):
     mx = face.max(-1)
     sat = (mx - face.min(-1)) / np.maximum(mx, 1)
 
-    # On the char the paint is simply far lighter than the near-black wood.
-    a_char = smoothstep(lum, 60, 110)
-    # On the lighter front-edge strip, paint is lighter and greyer than the wood.
-    a_strip = smoothstep(lum, 150, 195) * smoothstep(0.5 - sat, 0.0, 0.2) + smoothstep(0.3 - sat, 0.0, 0.12) * smoothstep(lum, 90, 120)
+    # On the char the paint is simply far lighter than the near-black wood (the grey under-feathers included).
+    a_char = smoothstep(lum, 48, 80)
+    # On the lighter front-edge strip, paint is lighter and greyer than the oiled wood.
+    gr = g / np.maximum(r, 1)
+    a_strip = np.maximum(smoothstep(gr, 0.8, 0.88) * smoothstep(lum, 60, 90), smoothstep(lum, 175, 205))
     alpha = a_char.copy()
-    alpha[:, :sw] = np.clip(a_strip[:, :sw], 0, 1)
-    # Region round the wing (x in inches from the inner corner of the strip, y down from the top of the crop).
-    region = poly_mask((h, w), [(0.0, 3.0), (0.0, 7.6), (STRIP_W, 7.6), (1.8, 5.6), (4.0, 3.2), (6.4, 0.7), (6.3, 0.0),
-                                (4.6, 0.2), (2.6, 1.6), (1.4, 2.4), (STRIP_W, 3.0)], soft=3)
+    alpha[:, :sw] = a_strip[:, :sw]
+    region = poly_mask((h, w), [(0.0, 3.6), (STRIP_W, 3.8), (2.5, 3.0), (4.2, 2.2), (5.4, 1.6), (6.6, 1.6), (6.6, 2.8),
+                                (5.0, 4.1), (3.0, 5.5), (1.6, 6.8), (STRIP_W, 7.9), (0.0, 8.6)], soft=3)
     alpha *= region
-    k = 11
-    alpha = np.maximum(alpha, rank(rank(alpha, k, np.max), k, np.min))
-    alpha = np.minimum(alpha, rank(rank(alpha, 5, np.min), 5, np.max) + 0.15)
-    alpha = smoothstep(blur(alpha, 1.2), 0.2, 0.8)
+    alpha = np.maximum(alpha, close(alpha, 4))
+    alpha = alpha * smoothstep(blur(alpha, 4), 0.25, 0.45)
+    alpha = smoothstep(blur(alpha, 1.0), 0.25, 0.75)
 
     light = lighting(lum, rank(alpha, 15, np.max), 50)
     flat = face * (np.median(light[alpha > 0.5]) / np.maximum(light, 15))[:, :, None] ** 0.3
+    # The low sun tints the wing beige; the paint is white, so take most of that cast out.
+    grey = flat.mean(-1, keepdims=True)
+    flat = grey + (flat - grey) * 0.55
     finish(flat, alpha, 1024, out, preview, bg=(18, 16, 15))
 
 

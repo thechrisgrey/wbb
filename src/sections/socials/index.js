@@ -20,7 +20,7 @@ const FOCUS = {
   discord: ['58%', '20%'],
 };
 
-const SIDE_SCALE = 0.86; // a card one step away from the front
+const SIDE_SCALE = 0.88; // a card one step away from the front
 const MAX_TILT = 7; // degrees
 
 function cardMarkup(s, m, i, total) {
@@ -82,6 +82,7 @@ export function init(root, ctx) {
   let lastX = 0;
   let lastT = 0;
   let dragged = false;
+  let steering = false; // a button, a side tap or the keyboard is moving the deck: it already knows its target
   let caught = false; // a press that stopped a moving deck is a catch, not a tap
   let throwT = 0;
 
@@ -129,11 +130,11 @@ export function init(root, ctx) {
         k = i;
       }
       if (motion) {
-        setScale[i](1 - Math.min(a, 1.4) * (1 - SIDE_SCALE));
+        setScale[i](1 - Math.min(a, 1) * (1 - SIDE_SCALE));
         setPicX[i](clamp(-d * 7, -12, 12)); // the photo drifts inside its frame: a window, not a sticker
       }
     }
-    setActive(k);
+    if (!steering) setActive(k);
 
     // cards lean into the throw and stand back up when it slows
     if (tilt) {
@@ -171,6 +172,7 @@ export function init(root, ctx) {
       },
     },
     onPress() {
+      steering = false;
       dragged = false;
       caught = performance.now() - throwT < 90 || gsap.isTweening(track);
       lastX = this.x;
@@ -206,7 +208,10 @@ export function init(root, ctx) {
   function measure() {
     fitLabels();
     const w = cells[0]?.offsetWidth || 1;
-    viewC = deck.clientWidth / 2;
+    // phone: the card in front sits centred. Desktop: it lines up with the page gutter and the rest of the deck runs right.
+    const dw = deck.clientWidth;
+    const g = parseFloat(getComputedStyle($('.s-socials__head', root)).paddingLeft) || 24;
+    viewC = window.innerWidth >= 900 ? Math.max(g, (dw - 1280) / 2 + g) + w / 2 : dw / 2;
     centers = cells.map((c) => c.offsetLeft + c.offsetWidth / 2);
     pitch = total > 1 ? centers[1] - centers[0] : w;
     snaps = centers.map((c) => Math.round(viewC - c));
@@ -218,6 +223,7 @@ export function init(root, ctx) {
 
   function goTo(i, dur = 0.75) {
     const k = clamp(i, 0, total - 1);
+    steering = true;
     gsap.to(track, {
       x: snaps[k],
       duration: motion ? dur : 0,
@@ -228,6 +234,7 @@ export function init(root, ctx) {
         update();
       },
       onComplete() {
+        steering = false;
         drag.update();
         update();
       },
