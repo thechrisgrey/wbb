@@ -1,0 +1,58 @@
+<!doctype html>
+<!-- Dev harness: run one or more sections in isolation. Not part of the production build.
+     /dev-section.html?s=hero            one section
+     /dev-section.html?s=hero,manifesto  several, in that order
+     &pad=0   no spacer blocks before and after (default adds them so scroll triggers and pins have room)
+     &sheet=1 also mount the product sheet and dock (ctx.openProduct works)
+     window.__ctx is the app context; document.documentElement.dataset.ready === '1' once sections are initialised. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Section harness</title>
+    <style>
+      .dev-spacer { height: 70svh; display: grid; place-items: center; font: 12px ui-monospace, monospace; opacity: 0.45; letter-spacing: 0.1em; text-transform: uppercase; }
+    </style>
+  </head>
+  <body>
+    <main id="main"></main>
+    <script type="module">
+      import './src/styles/fonts.css';
+      import './src/styles/tokens.css';
+      import './src/styles/base.css';
+      import { ScrollTrigger } from './src/lib/gsap.js';
+      import { ctx, initSections, markEntered, registerSheet } from './src/app.js';
+
+      const templates = import.meta.glob('./src/sections/*/template.html', { query: '?raw', import: 'default', eager: true });
+      const modules = import.meta.glob('./src/sections/*/index.js', { eager: true });
+      const uiHtml = import.meta.glob('./src/ui/*.html', { query: '?raw', import: 'default', eager: true });
+      const ui = import.meta.glob('./src/ui/*.js', { eager: true });
+
+      const q = new URLSearchParams(location.search);
+      const names = (q.get('s') || 'hero').split(',').filter(Boolean);
+      const pad = q.get('pad') !== '0';
+      const main = document.getElementById('main');
+      const spacer = (label) => `<div class="dev-spacer">${label}</div>`;
+      main.innerHTML = (pad ? spacer('scroll ↓') : '') + names.map((n) => templates[`./src/sections/${n}/template.html`] || `<p style="padding:40px">no template for "${n}"</p>`).join('') + (pad ? spacer('end') : '');
+
+      if (q.get('sheet') === '1') {
+        document.body.insertAdjacentHTML('beforeend', (uiHtml['./src/ui/dock.html'] || '') + (uiHtml['./src/ui/sheet.html'] || ''));
+        const sheet = ui['./src/ui/sheet.js']?.initSheet?.(ctx);
+        if (sheet) registerSheet(sheet);
+        ctx.dock = ui['./src/ui/dock.js']?.initDock?.(ctx) || null;
+      }
+
+      document.documentElement.classList.add('is-ready');
+      // app.js looks modules up as ./sections/<name>/index.js
+      const mapped = Object.fromEntries(Object.entries(modules).map(([k, v]) => [k.replace('./src/', './'), v]));
+      initSections(mapped);
+      markEntered();
+      window.__ctx = ctx;
+      window.__ST = ScrollTrigger;
+      document.fonts.ready.then(() => {
+        ScrollTrigger.refresh();
+        document.documentElement.dataset.ready = '1';
+      });
+    </script>
+  </body>
+</html>

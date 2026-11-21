@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 // <!--@include path/to/file.html--> is replaced with the file's contents at build and dev time,
@@ -7,7 +7,9 @@ import { resolve } from 'node:path';
 function htmlIncludes() {
   const pattern = /<!--\s*@include\s+([^\s]+)\s*-->/g;
   const expand = (html, depth = 0) =>
-    depth > 4 ? html : html.replace(pattern, (_, file) => expand(readFileSync(resolve(file), 'utf8'), depth + 1));
+    depth > 4
+      ? html
+      : html.replace(pattern, (_, file) => (existsSync(resolve(file)) ? expand(readFileSync(resolve(file), 'utf8'), depth + 1) : `<!-- missing include: ${file} -->`));
   return {
     name: 'html-includes',
     transformIndexHtml: { order: 'pre', handler: (html) => expand(html) },

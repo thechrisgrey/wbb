@@ -106,6 +106,7 @@ export function createStage({ dprMax = 2, autoRotate = true } = {}) {
     host: null,
     mode: 'turntable',
     handle: null,
+    wood: null,
     model: null,
     radius: 0.3,
     height: 0.2,
@@ -380,6 +381,7 @@ export function createStage({ dprMax = 2, autoRotate = true } = {}) {
       holder.add(next);
       state.model = next;
       state.handle = handle;
+      state.wood = wood || null;
       state.height = box.max.y;
       state.radius = Math.max(sphere.radius, 0.04) * (mod.meta?.fit || 1);
       state.pitch = v.pitch;
@@ -417,6 +419,7 @@ export function createStage({ dprMax = 2, autoRotate = true } = {}) {
 
   function setWood(species, { spin = true } = {}) {
     if (!state.model) return;
+    state.wood = species;
     if (!spin || reducedMotion()) {
       applyWood(state.model, species);
       state.dirty = true;

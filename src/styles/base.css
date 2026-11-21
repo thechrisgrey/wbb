@@ -298,6 +298,7 @@ button {
   position: relative;
   display: grid;
   place-items: center;
+  min-width: 0;
   aspect-ratio: 1;
   border-radius: 14%;
   background: var(--tile-bg);
@@ -307,8 +308,10 @@ button {
     4px 5px 0 var(--ink);
 }
 .tile svg {
+  display: block;
   width: 68%;
   height: 68%;
+  min-width: 0;
   overflow: visible;
 }
 .tile path {
