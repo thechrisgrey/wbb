@@ -39,7 +39,8 @@ The terminal prints a Network URL. Open it on a phone on the same Wi-Fi.
 
 ```
 index.html               page shell, sections included at build time
-src/main.js              boot
+src/main.js              loads shared styles, then the app
+src/entry.js             boot: shell, sections, preloader
 src/app.js               shared context passed to every section
 src/styles/              tokens, base styles, fonts
 src/lib/                 GSAP setup and motion helpers, DOM and image helpers
@@ -71,6 +72,13 @@ The catalog and media were captured from her store on 21 November 2026.
 Her site hosts one video, the stool build. It is re-cut into build order at `public/media/video/`, and its chapters are listed in `BUILD_VIDEO` in `src/data/site.js`.
 
 To add clips from Instagram, TikTok or YouTube, export them as MP4 (H.264, portrait, muted) into `public/media/video/` and list them in `src/data/site.js`.
+
+## Known limits
+
+- Checked in headless Chromium at 390, 360 and 1440 px wide. It has not been tried on a physical iPhone yet, so do a thumb test before the pitch: drag gestures, video autoplay and the 3D spin are the things to watch.
+- The 3D pieces are modeled by hand from her photos. They are close, and each one is recognizable, but they are approximations. Her photos stay one tap away in every product sheet.
+- Her site hosts one video. Clips from her social accounts need to be added as files (see above).
+- The newsletter field does not send anything. It points people to her store.
 
 ## Before sharing a link
 

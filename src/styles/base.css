@@ -345,8 +345,9 @@ button {
 
 /* ---------- page glue ---------- */
 /* The manifesto rises over the pinned hero: it overlaps the last screen of the hero's pin,
-   so its orange field arrives as a hard-edged wipe and its own pin starts the moment it reaches the top. */
-.s-hero + .s-manifesto {
+   so its orange field arrives as a hard-edged wipe and its own pin starts the moment it reaches the top.
+   The hero adds .is-pinned only when it pins (not under reduced motion). */
+.s-hero.is-pinned + .s-manifesto {
   position: relative;
   z-index: 2;
   margin-top: -100svh;

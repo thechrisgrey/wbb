@@ -12,15 +12,16 @@ const TILE_COLORS = ['', 'tile--orange', 'tile--ink', 'tile--brass', 'tile--blus
 const MAST_TILT = [-7, 5, -3, 6, -5, 4, -6, 3];
 const STACK_TILT = [-4, 3, -2, 4, 3, -3, 2, -4];
 const SCATTER_SPIN = [-210, 160, -120, 240, 190, -230, 140, -170];
+// fractions of the screen (x, y) and a scale: upper left only, clear of the card's path and of the headline
 const SCATTER_AT = [
-  [0.1, 0.2, 1.25],
-  [0.36, 0.12, 0.95],
-  [0.16, 0.44, 1.5],
-  [0.42, 0.34, 1.05],
-  [0.08, 0.66, 1.1],
-  [0.36, 0.58, 1.4],
-  [0.22, 0.82, 0.95],
-  [0.5, 0.76, 1.2],
+  [0.1, 0.1, 1.2],
+  [0.34, 0.07, 0.9],
+  [0.2, 0.25, 1.45],
+  [0.44, 0.2, 1.0],
+  [0.07, 0.4, 1.05],
+  [0.3, 0.42, 1.3],
+  [0.14, 0.52, 0.9],
+  [0.4, 0.33, 1.1],
 ];
 const TILE_PX = 64;
 
@@ -230,6 +231,7 @@ export function init(root, ctx) {
     placeFinal();
     window.addEventListener('resize', placeFinal);
   } else {
+    root.classList.add('is-pinned'); // lets the manifesto overlap the end of the pin (see base.css)
     measure();
     gsap.set(frame, { transformOrigin: '50% 50%' });
     tiles.forEach((t) => gsap.set(t, { transformOrigin: '0 0' }));

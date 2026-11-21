@@ -153,6 +153,40 @@ function leg(side, fin) {
   );
 }
 
+// ---- the painted egret ----
+// Decals cut from her photos by scripts/dev/textures-yakisugi-crane-wooden-stool.py (keep the numbers in step).
+// crane: inner face of the +x leg, left edge toward the back, right edge on the front corner, bottom on the floor.
+const CRANE = { w: 9.5, h: 9.6 };
+// wing: the front edge strip (inner corner -> outer corner) then the charred outer face, front corner -> back.
+const WING = { strip: 0.85, face: 6.6, y0: 1.6, y1: 10.6 };
+const LIFT = 0.0004; // metres off the wood
+
+function decalPlane(name, w, h, [u0, u1], place) {
+  const geo = new THREE.PlaneGeometry(K.inch(w), K.inch(h));
+  const uv = geo.attributes.uv;
+  for (let i = 0; i < uv.count; i++) uv.setX(i, u0 + uv.getX(i) * (u1 - u0));
+  return K.part(geo, K.M.decal(name), { shadow: false, name: 'paint', ...place });
+}
+
+function egret() {
+  const crane = decalPlane('yakisugi-crane-wooden-stool-crane', CRANE.w, CRANE.h, [0, 1], {
+    pos: [K.inch(XI) - LIFT, K.inch(CRANE.h / 2), K.inch(D / 2 - CRANE.w / 2)],
+    rot: [0, -Math.PI / 2, 0],
+  });
+  const span = WING.strip + WING.face;
+  const wh = WING.y1 - WING.y0;
+  const wy = K.inch((WING.y0 + WING.y1) / 2);
+  const strip = decalPlane('yakisugi-crane-wooden-stool-wing', WING.strip, wh, [0, WING.strip / span], {
+    pos: [K.inch(XI + WING.strip / 2), wy, K.inch(D / 2) + LIFT],
+  });
+  const wing = decalPlane('yakisugi-crane-wooden-stool-wing', WING.face, wh, [WING.strip / span, 1], {
+    pos: [K.inch(W / 2) + LIFT, wy, K.inch(D / 2 - WING.face / 2)],
+    rot: [0, Math.PI / 2, 0],
+  });
+  crane.renderOrder = strip.renderOrder = wing.renderOrder = 1;
+  return [crane, strip, wing];
+}
+
 /** The stretcher under the seat: flat underneath, cut to the V on top. */
 function rail(fin) {
   const under = (x) => seatTop(x) - TV;
@@ -185,11 +219,11 @@ export function build() {
   };
   const fin = {
     char: finish('ebonized', 1),
-    stain: finish('oak', 0.46),
-    edge: finish('oak', 0.8),
-    endGrain: finish('mahogany', 0.7),
+    stain: finish('walnut', 0.8), // warm dark brown stain on the inner faces and under the seat
+    edge: finish('oak', 0.66), // cut edges are left lighter (oiled, honey-tan)
+    endGrain: finish('oak', 0.62), // the box-joint fingers: end grain, oiled, lighter than the char
   };
 
-  const g = K.group(leg(1, fin), leg(-1, fin), seatBoard(1, fin), seatBoard(-1, fin), rail(fin));
+  const g = K.group(leg(1, fin), leg(-1, fin), seatBoard(1, fin), seatBoard(-1, fin), rail(fin), egret());
   return K.seat(g);
 }

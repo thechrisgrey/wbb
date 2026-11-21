@@ -15,19 +15,15 @@ export function badgeSvg(cls = '') {
 }
 
 function warmVideo() {
-  // Fetch enough of the hero video that it can start the moment the curtain lifts.
+  // Wait for the hero's own video element (its src is set before the preloader starts), so the file is
+  // fetched once and can play the moment the curtain lifts.
   return new Promise((resolve) => {
-    const v = document.createElement('video');
-    v.muted = true;
-    v.playsInline = true;
-    v.preload = 'auto';
-    // same choice the hero makes, so the bytes are already cached when it starts
-    v.src = asset(navigator.connection?.saveData || window.innerWidth < 340 ? BUILD_VIDEO.src720 : BUILD_VIDEO.src1080);
+    const v = document.querySelector('[data-hero-video]');
+    if (!v || v.readyState >= 3) return resolve();
     const done = () => resolve();
-    v.addEventListener('canplaythrough', done, { once: true });
+    v.addEventListener('canplay', done, { once: true });
     v.addEventListener('loadeddata', done, { once: true });
     v.addEventListener('error', done, { once: true });
-    v.load();
   });
 }
 
