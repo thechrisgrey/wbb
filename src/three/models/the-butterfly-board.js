@@ -61,16 +61,23 @@ function soup() {
   return { pos, nor, tri, loft, cap };
 }
 
-/** Edge profile from the top face to the bottom face: a quarter-round of radius a, the wall, a quarter-round b. */
-function edgeProfile(T, a, b, na = 8, nb = 5) {
+/**
+ * Edge profile from the top face to the bottom face: a quarter-ellipse round-over (aw across, ah deep), the wall,
+ * then a smaller one underneath (bw, bh). d is the inset from the outline, nr / nh the normal across / along h.
+ */
+function edgeProfile(T, [aw, ah], [bw, bh], na = 9, nb = 5) {
   const out = [];
+  const at = (p, w, t, h, sign) => {
+    const l = Math.hypot(t * Math.cos(p), w * Math.sin(p));
+    out.push({ d: w * (1 - Math.cos(p)), h, nr: (t * Math.cos(p)) / l, nh: (sign * w * Math.sin(p)) / l });
+  };
   for (let i = 0; i <= na; i++) {
     const p = (Math.PI / 2) * (1 - i / na);
-    out.push({ d: a * (1 - Math.cos(p)), h: T - a + a * Math.sin(p), nr: Math.cos(p), nh: Math.sin(p) });
+    at(p, aw, ah, T - ah + ah * Math.sin(p), 1);
   }
   for (let i = 0; i <= nb; i++) {
     const p = (Math.PI / 2) * (i / nb);
-    out.push({ d: b * (1 - Math.cos(p)), h: b - b * Math.sin(p), nr: Math.cos(p), nh: -Math.sin(p) });
+    at(p, bw, bh, bh - bh * Math.sin(p), -1);
   }
   return out;
 }
@@ -131,7 +138,8 @@ function roundCorners(pts, radii, seg = 6) {
 export function build({ wood = 'walnut' } = {}) {
   const R = K.inch(6);
   const T = K.inch(0.8);
-  const edge = edgeProfile(T, K.inch(0.3), K.inch(0.13), 8, 5); // soft, generous round-over on the top edge
+  const roundW = K.inch(0.42); // soft, generous round-over on the top edge
+  const edge = edgeProfile(T, [roundW, K.inch(0.32)], [K.inch(0.14), K.inch(0.13)], 9, 5);
 
   // ----- handle: a round ear standing off the rim on a short neck that widens into the round -----
   const hA = rad(155); // up and to the left
@@ -140,7 +148,7 @@ export function build({ wood = 'walnut' } = {}) {
   const flare = rad(12); // each side of the neck opens out this much towards the board
   const fil = K.inch(0.45); // fillet where the neck meets the round
   const holeR = K.inch(0.59);
-  const holeEdge = edgeProfile(T, K.inch(0.15), K.inch(0.08), 6, 4);
+  const holeEdge = edgeProfile(T, [K.inch(0.17), K.inch(0.15)], [K.inch(0.08), K.inch(0.08)], 6, 4);
   // handle-local frame: a = along the handle axis (outwards), l = across it
   const toBoard = ([a, l]) => [a * Math.cos(hA) - l * Math.sin(hA), a * Math.sin(hA) + l * Math.cos(hA)];
   const E = toBoard([earD, 0]);
@@ -229,7 +237,7 @@ export function build({ wood = 'walnut' } = {}) {
   // Radii sampled along the split's walls, rim to tip. Every ring's own radius is in the list so the walls
   // meet the rounded edge exactly.
   const radii = new Set(edge.map((p) => R - p.d));
-  const flatR = R - K.inch(0.3);
+  const flatR = R - roundW;
   for (let k = 1; k <= 30; k++) radii.add(flatR + ((tipR - flatR) * k) / 30);
   const rhos = [...radii].sort((a, b) => b - a);
 
@@ -268,7 +276,7 @@ export function build({ wood = 'walnut' } = {}) {
   const gap = soup();
   gap.loft(wallCW, false);
   gap.loft(wallCCW, false);
-  const split = woodSolid(gap, { species: wood, angle: 0, size: 0.42, darken: 0.2, name: 'split' });
+  const split = woodSolid(gap, { species: wood, angle: 0, size: 0.42, darken: 0.16, name: 'split' });
 
   // ----- brass butterfly key, set flush across the split about an inch in from the rim -----
   const keyRho = R - K.inch(1.1);

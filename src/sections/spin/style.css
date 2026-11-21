@@ -1,0 +1,622 @@
+/* Spin room: one tall cream screen. Poster numeral behind, the piece on the turntable in front,
+   captions in the corners, title and actions under the thumb, a ticket rail to change piece. */
+.s-spin {
+  --pad: var(--gutter);
+  --dock-clear: calc(var(--dock-h) + var(--safe-b) + 24px);
+  --numeral: #dad2bb;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(46svh, 1fr) auto auto;
+  min-height: 100svh;
+  padding-bottom: var(--dock-clear);
+  background: var(--cream);
+  color: var(--ink);
+  overflow: hidden;
+  overflow: clip;
+}
+
+/* ---------- the stage ---------- */
+.s-spin__stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  container-type: size;
+}
+
+/* poster numeral: top left like a masthead, the piece overlaps it */
+.s-spin__num {
+  position: absolute;
+  top: 2.5rem;
+  left: calc(var(--pad) - 0.05em);
+  z-index: 0;
+  font-size: 70vw;
+  font-size: min(72cqw, 54cqh);
+  line-height: 0.84;
+  letter-spacing: -0.035em;
+  color: var(--numeral);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.s-spin__digit {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  padding-block: 0.03em;
+  overflow: hidden;
+  overflow-x: visible;
+  overflow-y: clip;
+}
+.s-spin__roll,
+.s-spin__glyph {
+  display: block;
+}
+.s-spin__glyph.is-leaving {
+  position: absolute;
+  top: 0.03em;
+  left: 0;
+}
+
+/* the thin circle from the poster, and the dot that rides it with the turntable */
+.s-spin__ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: 84vw;
+  width: min(86cqw, 80cqh);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  pointer-events: none;
+}
+.s-spin__ring svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.s-spin__ring circle {
+  stroke: var(--ink);
+  stroke-width: 0.7;
+}
+.s-spin__dial {
+  position: absolute;
+  inset: 0;
+}
+.s-spin__dial i {
+  position: absolute;
+  top: 0.25%;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.s-spin__host {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.s-spin__host:focus {
+  outline: none;
+}
+.s-spin__host:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: -6px;
+}
+.s-spin__host.is-dragging {
+  cursor: grabbing !important;
+}
+
+/* photo stand-in: her product photo inside the circle, drag sideways for more angles */
+.s-spin__photo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  width: 76vw;
+  width: min(77cqw, 72cqh);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--numeral);
+  touch-action: pan-y;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.s-spin__shot {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--ph, var(--numeral));
+}
+.s-spin__shot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* "Now spin it." : her letter tiles, there for the hand-off, gone once the piece lands */
+.s-spin__line {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  row-gap: 0.1em;
+  font-size: 15vw;
+  font-size: min(17cqw, 16cqh);
+  line-height: 0.9;
+  text-align: center;
+  pointer-events: none;
+}
+.s-spin__word {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: pre;
+}
+.s-spin__ch {
+  display: inline-block;
+}
+.s-spin__line .tile {
+  flex: none;
+  width: 0.88em;
+  margin: 0 0.07em 0 0.03em;
+  box-shadow:
+    inset 0 0 0 2px var(--ink),
+    0.06em 0.075em 0 var(--ink);
+}
+.s-spin__line.is-done {
+  visibility: hidden;
+}
+
+/* corner captions */
+.s-spin__cap {
+  position: absolute;
+  top: 1rem;
+  z-index: 4;
+  pointer-events: none;
+}
+.s-spin__cap--tl {
+  left: var(--pad);
+}
+.s-spin__cap--tr {
+  right: var(--pad);
+  text-align: right;
+}
+.s-spin__mask {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  overflow: hidden;
+  overflow: clip;
+}
+.s-spin__mask > * {
+  display: block;
+  white-space: nowrap;
+}
+.s-spin__mask > .is-leaving {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.s-spin__cap--tr .s-spin__mask > .is-leaving {
+  right: 0;
+  left: auto;
+}
+
+/* price sticker and her badge, slapped on the poster */
+.s-spin__tags {
+  position: absolute;
+  top: 2.9rem;
+  right: var(--pad);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.55rem;
+  pointer-events: none;
+}
+.s-spin__price {
+  justify-items: start;
+  padding: 0.4em 0.56em 0.3em;
+  font-size: 1.62rem;
+  letter-spacing: -0.01em;
+  box-shadow: 4px 5px 0 var(--ink);
+}
+.s-spin__price small {
+  display: block;
+  margin-bottom: 0.3em;
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.s-spin__badge {
+  margin-right: 0.35rem;
+  padding: 0.52em 0.72em 0.48em;
+  border-radius: 7px;
+  background: var(--butter);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+  rotate: 3deg;
+  white-space: nowrap;
+}
+
+/* bottom corners: the hint (then the angle read-out) and the arrows */
+.s-spin__hint {
+  position: absolute;
+  bottom: 0.4rem;
+  left: var(--pad);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  min-height: 46px;
+  pointer-events: none;
+}
+.s-spin__hand {
+  flex: none;
+  display: block;
+  width: 22px;
+  transform-origin: 50% 90%;
+}
+.s-spin__hand svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  fill: var(--ink);
+}
+.s-spin__dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.s-spin__read {
+  font-variant-numeric: tabular-nums;
+}
+.s-spin__nav {
+  position: absolute;
+  right: var(--pad);
+  bottom: 0.4rem;
+  z-index: 4;
+  display: flex;
+  gap: 8px;
+}
+.s-spin__arrow {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--cream);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+  font-family: var(--f-sans);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    transform 0.45s var(--e-out),
+    background-color 0.2s linear,
+    color 0.2s linear;
+}
+.s-spin__arrow:active {
+  transform: scale(0.9);
+  background: var(--ink);
+  color: var(--paper);
+}
+@media (hover: hover) {
+  .s-spin__arrow:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+}
+
+/* ---------- words and actions ---------- */
+.s-spin__info {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  padding: 0.15rem var(--pad) 0;
+}
+.s-spin__kicker {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  height: calc(2.2em + 0.14em);
+  padding-bottom: 0.14em;
+  font-size: 1.36rem;
+  line-height: 1.1;
+  overflow: hidden;
+  overflow: clip;
+}
+.s-spin__kicker > span {
+  display: block;
+  max-width: 21em;
+  text-wrap: balance;
+}
+.s-spin__kicker > .is-leaving {
+  position: absolute;
+  bottom: 0.14em;
+  left: 0;
+}
+.s-spin__title {
+  --fit: 1;
+  margin-top: 0.1em;
+  font-size: calc(min(11.6vw, 6.3svh, 4.6rem) * var(--fit));
+}
+.s-spin__tline {
+  position: relative;
+  display: block;
+  padding-block: 0.07em 0.12em;
+  margin-block: -0.07em -0.12em;
+  white-space: nowrap;
+  overflow: hidden;
+  overflow: clip;
+}
+.s-spin__tline > span {
+  display: block;
+  width: max-content;
+}
+.s-spin__tline > .is-leaving {
+  position: absolute;
+  top: 0.07em;
+  left: 0;
+}
+
+.s-spin__woods {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  margin-top: 0.5rem;
+}
+.s-spin__swatches {
+  display: flex;
+  margin-left: -8px;
+}
+.s-spin__swatch {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+.s-spin__swatch::before {
+  content: '';
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--sw);
+  background-image: var(--tex, none);
+  background-position: 30% 40%;
+  background-size: 420% auto;
+  background-blend-mode: multiply;
+  box-shadow: inset 0 0 0 1.5px rgba(22, 19, 15, 0.22);
+  transition: transform 0.5s var(--e-back);
+}
+.s-spin__swatch::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+  opacity: 0;
+  transform: scale(0.7);
+  transition:
+    transform 0.5s var(--e-back),
+    opacity 0.2s linear;
+}
+.s-spin__swatch[aria-pressed='true']::before {
+  transform: scale(0.84);
+}
+.s-spin__swatch[aria-pressed='true']::after {
+  opacity: 1;
+  transform: scale(1);
+}
+.s-spin__wood {
+  display: block;
+  min-width: 0;
+}
+
+.s-spin__actions {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 8px;
+  margin-top: 0.55rem;
+}
+.s-spin__actions .btn {
+  min-width: 0;
+  padding-inline: 1em;
+}
+
+/* ---------- ticket rail ---------- */
+.s-spin__rail {
+  position: relative;
+  z-index: 3;
+  min-width: 0;
+  margin-top: 0.8rem;
+  overflow: hidden;
+  overflow: clip;
+}
+.s-spin__track {
+  display: flex;
+  gap: 8px;
+  width: max-content;
+  padding-inline: var(--pad);
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.s-spin__ticket {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: 58px;
+  padding: 6px 13px 6px 6px;
+  border-radius: 15px;
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+  color: var(--ink);
+  -webkit-touch-callout: none;
+}
+.s-spin__ticket::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: var(--ink);
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 0.55s var(--e-out);
+}
+.s-spin__ticket[aria-current='true'] {
+  color: var(--paper);
+}
+.s-spin__ticket[aria-current='true']::before {
+  clip-path: inset(0 0 0 0);
+}
+.s-spin__ticket > * {
+  position: relative;
+  z-index: 1;
+}
+.s-spin__thumb {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--ph, var(--numeral));
+}
+.s-spin__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+.s-spin__perf {
+  align-self: stretch;
+  width: 0;
+  margin: 3px 11px 3px 10px;
+  border-left: 1.5px dashed currentColor;
+  opacity: 0.5;
+}
+.s-spin__tnum {
+  font-family: var(--f-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  transition: color 0.3s linear;
+}
+.s-spin__ticket--all {
+  gap: 0.6em;
+  padding-inline: 16px;
+  font-family: var(--f-mono);
+  font-size: var(--t-cap);
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: none;
+  background: var(--numeral);
+}
+.s-spin__ticket--all b {
+  font-family: var(--f-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* shorter phones (Safari with its toolbar up): tighten, never shrink the turntable */
+@media (max-height: 700px) {
+  .s-spin__kicker {
+    font-size: 1.2rem;
+  }
+  .s-spin__woods {
+    margin-top: 0.3rem;
+  }
+  .s-spin__actions {
+    margin-top: 0.35rem;
+  }
+  .s-spin__rail {
+    margin-top: 0.6rem;
+  }
+  .s-spin__ticket {
+    height: 52px;
+  }
+  .s-spin__thumb {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ---------- desktop: stage left, words right ---------- */
+@media (min-width: 900px) {
+  .s-spin {
+    --pad: clamp(28px, 3.4vw, 56px);
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto 1fr;
+    column-gap: 0;
+    height: 100svh;
+    min-height: 620px;
+    padding-bottom: 0;
+  }
+  .s-spin__stage {
+    grid-column: 1;
+    grid-row: 1 / -1;
+  }
+  .s-spin__num {
+    top: 4rem;
+  }
+  .s-spin__cap {
+    top: 1.75rem;
+  }
+  .s-spin__tags {
+    top: 4.4rem;
+  }
+  .s-spin__hint,
+  .s-spin__nav {
+    bottom: calc(var(--dock-clear) - 12px);
+  }
+  .s-spin__info {
+    grid-column: 2;
+    grid-row: 2;
+    padding: 0 var(--pad) 0 0;
+  }
+  .s-spin__title {
+    font-size: calc(min(5.4vw, 9svh, 5.4rem) * var(--fit));
+  }
+  .s-spin__kicker {
+    font-size: 1.7rem;
+  }
+  .s-spin__actions {
+    max-width: 420px;
+    margin-top: 1rem;
+  }
+  .s-spin__rail {
+    grid-column: 2;
+    grid-row: 3;
+    margin-top: 1.6rem;
+  }
+  .s-spin__track {
+    padding-inline: 0 var(--pad);
+  }
+}
