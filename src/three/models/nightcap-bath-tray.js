@@ -265,7 +265,9 @@ export function build({ wood = 'rosewood' } = {}) {
     ...arc(slotX + slotL / 2 - rr, slotZ - slotW / 2 + rr, rr, rad(270), rad(360), 5),
   ];
 
-  const GRAIN = { size: 0.56, offset: [0.36, 0.69] };
+  // Where the plank is cut from the species texture: this strip puts one lens of pale sapwood on the slot-side edge
+  // beside the coaster (the slot runs through it, as in her photos) and keeps the rest dark and figured.
+  const GRAIN = { size: 0.56, offset: [0.932, 1.495] };
   const plank = woodSlab(
     {
       outline: { pts, edge: (j) => tags[j] },
@@ -330,10 +332,16 @@ export function build({ wood = 'rosewood' } = {}) {
   );
   const floorGeo = new THREE.RingGeometry(0, Rf + mm(0.05), 128, 3);
   {
-    // polar UVs (u = radius, v = angle) give the anisotropic highlight its circular lay
-    const uv = floorGeo.getAttribute('uv');
-    for (let j = 0; j <= 3; j++) for (let i = 0; i <= 128; i++) uv.setXY(j * 129 + i, j / 3, i / 128);
+    // radial tangents give the anisotropic highlight its circular lay (the brushing runs round the disc)
     floorGeo.rotateX(-Math.PI / 2);
+    const tan = new Float32Array(4 * 129 * 4);
+    for (let j = 0; j <= 3; j++) {
+      for (let i = 0; i <= 128; i++) {
+        const a = (i / 128) * Math.PI * 2;
+        tan.set([Math.cos(a), 0, -Math.sin(a), 1], (j * 129 + i) * 4);
+      }
+    }
+    floorGeo.setAttribute('tangent', new THREE.BufferAttribute(tan, 4));
   }
   const floor = K.part(floorGeo, spunBrass(), { pos: [cx, yFloor, cz], shadow: false, name: 'coaster-floor' });
 

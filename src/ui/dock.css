@@ -51,9 +51,8 @@
   padding: 0 16px;
   border-radius: var(--r-pill);
   font-size: 0.98rem;
-  font-weight: 640;
-  font-stretch: 88%;
-  letter-spacing: -0.01em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   transition:
     background-color 0.35s var(--e-out),
     color 0.35s var(--e-out);

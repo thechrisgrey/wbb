@@ -239,7 +239,7 @@ export function build({ wood = 'walnut' } = {}) {
 
   // Corner keys, about a quarter and three quarters of the way up.
   const keySpecies = splineFor(wood);
-  const keys = K.wood(splineKeys({ L, W, leg: K.inch(0.72), thick: K.inch(0.12), heights: [K.inch(0.8), K.inch(2.3)] }), {
+  const keys = K.wood(splineKeys({ L, W, leg: K.inch(0.82), thick: K.inch(0.12), heights: [K.inch(0.8), K.inch(2.3)] }), {
     species: keySpecies,
     role: 'accent',
     darken: KEY_TONE[keySpecies],

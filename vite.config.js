@@ -22,7 +22,8 @@ function htmlIncludes() {
 export default defineConfig(({ command }) => ({
   base: './',
   plugins: [htmlIncludes()],
-  server: { host: true, port: 5173 },
+  // WBB_NO_HMR=1 turns hot reload off, so scripted screenshots are not interrupted while files change.
+  server: { host: true, port: 5173, hmr: process.env.WBB_NO_HMR ? false : undefined },
   build: {
     target: 'es2020',
     assetsInlineLimit: 2048,

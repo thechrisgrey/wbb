@@ -43,10 +43,10 @@ Depth comes from the hard offset shadow of her badge (`box-shadow: 4px 5px 0 var
 ## Type (classes in src/styles/base.css)
 
 - `.t-display` Titan One, lowercase, very tight. Echoes her chunky wordmark. For a few huge words and for numerals (`.t-num`). Never for paragraphs.
-- `.t-h1 .t-h2 .t-h3` Bricolage Grotesque, condensed and heavy. Headlines.
+- `.t-h1 .t-h2 .t-h3` Inter Tight at weight 600 with tight tracking. Headlines. Keep them at 600; do not go heavier.
 - `.t-serif` Instrument Serif italic. One or two words inside a headline for contrast ("functional art"), or a kicker line.
 - `.t-cap` DM Mono, uppercase, tracked. The small Swiss captions: index numbers, labels, prices, "Nº 05 / 17".
-- Body: Bricolage 420 at `--t-body`; `.t-lede` for intros.
+- Body: Inter Tight 430 at `--t-body`; `.t-lede` for intros. Inter Tight has no width axis, so `font-stretch` does nothing.
 - Sizes: `--t-mega`, `--t-hero`, `--t-h1`, `--t-h2`, `--t-h3`, `--t-lede`, `--t-body`, `--t-small`, `--t-cap`.
 
 Scale contrast is the look: one very large element, a few very small captions, little in between.

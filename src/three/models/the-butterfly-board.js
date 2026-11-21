@@ -133,69 +133,96 @@ export function build({ wood = 'walnut' } = {}) {
   const T = K.inch(0.8);
   const edge = edgeProfile(T, K.inch(0.3), K.inch(0.13), 8, 5); // soft, generous round-over on the top edge
 
-  // ----- handle: a round ear sitting on the rim, blended into the round with a fillet each side -----
+  // ----- handle: a round ear standing off the rim on a short neck that widens into the round -----
   const hA = rad(155); // up and to the left
-  const earR = K.inch(1.35);
-  const earD = R + K.inch(0.95);
-  const fil = K.inch(0.6);
-  const alpha = Math.acos((earD ** 2 + (R + fil) ** 2 - (earR + fil) ** 2) / (2 * earD * (R + fil)));
-  const E = pol(earD, hA);
-  const F1 = pol(R + fil, hA - alpha);
-  const F2 = pol(R + fil, hA + alpha);
-  const holeR = K.inch(0.575);
+  const earR = K.inch(1.4);
+  const earD = R + K.inch(1.0);
+  const flare = rad(12); // each side of the neck opens out this much towards the board
+  const fil = K.inch(0.45); // fillet where the neck meets the round
+  const holeR = K.inch(0.59);
   const holeEdge = edgeProfile(T, K.inch(0.15), K.inch(0.08), 6, 4);
+  // handle-local frame: a = along the handle axis (outwards), l = across it
+  const toBoard = ([a, l]) => [a * Math.cos(hA) - l * Math.sin(hA), a * Math.sin(hA) + l * Math.cos(hA)];
+  const E = toBoard([earD, 0]);
+  const neck = [-1, 1].map((side) => {
+    const n = [Math.sin(flare), side * Math.cos(flare)]; // outward normal of this side of the neck
+    const dir = [-Math.cos(flare), side * Math.sin(flare)]; // along it, towards the board
+    const p = [earD + earR * n[0], earR * n[1]]; // where the neck leaves the ear
+    // fillet centre c = p + s * dir + fil * n, with |c| = R + fil
+    const q = [p[0] + fil * n[0], p[1] + fil * n[1]];
+    const bq = q[0] * dir[0] + q[1] * dir[1];
+    const s = -bq - Math.sqrt(bq * bq - (q[0] * q[0] + q[1] * q[1] - (R + fil) ** 2));
+    const c = [q[0] + s * dir[0], q[1] + s * dir[1]];
+    return {
+      n: toBoard(n),
+      earPt: toBoard(p),
+      filPt: toBoard([p[0] + s * dir[0], p[1] + s * dir[1]]),
+      c: toBoard(c),
+      nA: hA + Math.atan2(n[1], n[0]), // direction of the normal
+      cA: hA + Math.atan2(c[1], c[0]), // where the fillet touches the round
+    };
+  });
 
-  // ----- the split: a V running in from the rim, a little crooked, wide at the rim and closing to nothing -----
+  // ----- the split: a V running in from the rim, a little crooked, wide at the rim and closing to nothing.
+  // It also leans through the thickness, the way a real check does, so you look at its dark walls, not through it.
   const crackA = rad(-72); // lower right
   const crackLen = K.inch(2.4);
   const tipR = R - crackLen;
+  const lean = 0.3;
   // sideways drift of the split's centre line (metres) and its half width, both as a function of radius
   const drift = (rho) => {
     const s = (R - rho) / crackLen;
-    return crackLen * (0.11 * s + 0.024 * Math.sin(s * 5.2 + 0.5) + 0.008 * Math.sin(s * 15 + 1.3));
+    return crackLen * (0.14 * s + 0.024 * Math.sin(s * 5.2 + 0.5) + 0.008 * Math.sin(s * 15 + 1.3));
   };
   const halfW = (rho) => {
     const s = THREE.MathUtils.clamp((rho - tipR) / crackLen, 0, 1);
     return K.inch(0.135) * s ** 1.15 + K.inch(0.035) * Math.exp(-(R - rho) / K.inch(0.07));
   };
-  const wallTh = (side, rho) => crackA + (drift(rho) + side * halfW(rho)) / rho;
-  const wallPt = (side, rho) => pol(rho, wallTh(side, rho));
-  const wallN = (side, rho) => {
-    const p0 = wallPt(side, Math.max(tipR, rho - 2e-5));
-    const p1 = wallPt(side, Math.min(R, rho + 2e-5));
+  const wallTh = (side, rho, h) => crackA + (drift(rho) + lean * (T - h) + side * halfW(rho)) / rho;
+  const wallPt = (side, rho, h) => pol(rho, wallTh(side, rho, h));
+  const wallN = (side, rho, h) => {
+    const p0 = wallPt(side, Math.max(tipR, rho - 2e-5), h);
+    const p1 = wallPt(side, Math.min(R, rho + 2e-5), h);
     const l = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]);
-    const tx = (p1[0] - p0[0]) / l;
+    const tx = (p1[0] - p0[0]) / l; // along the wall, outwards
     const ty = (p1[1] - p0[1]) / l;
-    return side > 0 ? [ty, -tx] : [-ty, tx]; // faces into the gap
+    const th = wallTh(side, rho, h);
+    const wx = lean * Math.sin(th); // d(position)/dh, the lean
+    const wy = -lean * Math.cos(th);
+    const n = [ty, -tx, tx * wy - ty * wx];
+    const nl = Math.hypot(n[0], n[1], n[2]) * side;
+    return [n[0] / nl, n[1] / nl, n[2] / nl]; // faces into the gap
   };
 
-  // One ring of the outline, inset by d: from the split's counter-clockwise wall, round the board and the ear,
-  // back to the split's clockwise wall. Arcs stay tangent at any inset, so normals are exact.
-  const rimRing = (d) => {
+  // One ring of the outline, inset by d at height h: from the split's counter-clockwise wall, round the board,
+  // up the neck, round the ear and back to the split's clockwise wall. Every piece stays tangent at any inset.
+  const rimRing = (d, h) => {
     const out = [];
-    const arc = (c, r, a0, a1, n, sign, first) => {
+    let first = true;
+    const arc = (c, r, a0, a1, n, sign) => {
+      if (sign < 0) while (a1 > a0) a1 -= TAU; // fillets run clockwise
+      else while (a1 < a0) a1 += TAU;
       for (let j = first ? 0 : 1; j <= n; j++) {
         const a = a0 + ((a1 - a0) * j) / n;
         out.push({ x: c[0] + r * Math.cos(a), y: c[1] + r * Math.sin(a), nx: sign * Math.cos(a), ny: sign * Math.sin(a) });
       }
+      first = false;
+    };
+    const line = (p0, p1, nrm, n) => {
+      for (let j = 1; j <= n; j++) {
+        const t = j / n;
+        out.push({ x: p0[0] + (p1[0] - p0[0]) * t - nrm[0] * d, y: p0[1] + (p1[1] - p0[1]) * t - nrm[1] * d, nx: nrm[0], ny: nrm[1] });
+      }
     };
     const Ri = R - d;
-    arc([0, 0], Ri, wallTh(1, Ri), hA - alpha, 104, 1, true);
-    const b0 = hA - alpha + Math.PI;
-    let b1 = Math.atan2(E[1] - F1[1], E[0] - F1[0]);
-    while (b1 > b0) b1 -= TAU;
-    while (b0 - b1 > TAU) b1 += TAU;
-    arc(F1, fil + d, b0, b1, 10, -1, false);
-    const g0 = Math.atan2(F1[1] - E[1], F1[0] - E[0]);
-    let g1 = Math.atan2(F2[1] - E[1], F2[0] - E[0]);
-    while (g1 < g0) g1 += TAU;
-    arc(E, earR - d, g0, g1, 44, 1, false);
-    const c0 = Math.atan2(E[1] - F2[1], E[0] - F2[0]);
-    let c1 = hA + alpha + Math.PI;
-    while (c1 > c0) c1 -= TAU;
-    while (c0 - c1 > TAU) c1 += TAU;
-    arc(F2, fil + d, c0, c1, 10, -1, false);
-    arc([0, 0], Ri, hA + alpha, wallTh(-1, Ri) + TAU, 58, 1, false);
+    const [n1, n2] = neck;
+    arc([0, 0], Ri, wallTh(1, Ri, h), n1.cA, 104, 1);
+    arc(n1.c, fil + d, n1.cA + Math.PI, n1.nA + Math.PI, 8, -1);
+    line(n1.filPt, n1.earPt, n1.n, 3);
+    arc(E, earR - d, n1.nA, n2.nA, 34, 1);
+    line(n2.earPt, n2.filPt, n2.n, 3);
+    arc(n2.c, fil + d, n2.nA + Math.PI, n2.cA + Math.PI, 8, -1);
+    arc([0, 0], Ri, n2.cA, wallTh(-1, Ri, h) + TAU, 58, 1);
     return out;
   };
 
@@ -211,13 +238,12 @@ export function build({ wood = 'walnut' } = {}) {
   const wallCCW = [];
   for (const p of edge) {
     const Ri = R - p.d;
-    rim.push(rimRing(p.d).map((q) => V(q.x, q.y, p.h, q.nx * p.nr, q.ny * p.nr, p.nh)));
+    rim.push(rimRing(p.d, p.h).map((q) => V(q.x, q.y, p.h, q.nx * p.nr, q.ny * p.nr, p.nh)));
     const wall = (side) =>
       rhos.map((rho) => {
         const r = Math.min(rho, Ri);
-        const [x, y] = wallPt(side, r);
-        const [nx, ny] = wallN(side, r);
-        return V(x, y, p.h, nx, ny, 0);
+        const [x, y] = wallPt(side, r, p.h);
+        return V(x, y, p.h, ...wallN(side, r, p.h));
       });
     wallCW.push(wall(-1)); // rim -> tip
     wallCCW.push(wall(1).reverse()); // tip -> rim
@@ -242,18 +268,16 @@ export function build({ wood = 'walnut' } = {}) {
   const gap = soup();
   gap.loft(wallCW, false);
   gap.loft(wallCCW, false);
-  const split = woodSolid(gap, { species: wood, angle: 0, size: 0.42, darken: 0.34, name: 'split' });
+  const split = woodSolid(gap, { species: wood, angle: 0, size: 0.42, darken: 0.2, name: 'split' });
 
   // ----- brass butterfly key, set flush across the split about an inch in from the rim -----
   const keyRho = R - K.inch(1.1);
   const kc = pol(keyRho, crackA + drift(keyRho) / keyRho);
-  const q0 = pol(keyRho + 0.004, crackA + drift(keyRho + 0.004) / (keyRho + 0.004));
-  const q1 = pol(keyRho - 0.004, crackA + drift(keyRho - 0.004) / (keyRho - 0.004));
-  const ql = Math.hypot(q1[0] - q0[0], q1[1] - q0[1]);
-  const vx = (q1[0] - q0[0]) / ql; // along the split, towards the middle of the board
-  const vy = (q1[1] - q0[1]) / ql;
-  const ux = vy; // across the split
-  const uy = -vx;
+  const keyA = rad(3); // the key lies along the grain, not quite square to the split
+  const ux = Math.cos(keyA); // across the split
+  const uy = Math.sin(keyA);
+  const vx = -uy; // towards the middle of the board
+  const vy = ux;
   // wings: wide side towards the middle of the board, narrow side towards the rim, pinched to a waist over the split
   const wings = roundCorners(
     [
