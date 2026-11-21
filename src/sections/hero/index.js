@@ -62,8 +62,9 @@ export function init(root, ctx) {
   let wantPlay = true;
   let inView = true;
 
+  let entered = false; // the story starts at "Cut." when the preloader lifts, not behind it
   const tryPlay = () => {
-    if (!wantPlay || !inView) return;
+    if (!entered || !wantPlay || !inView) return;
     const p = video.play();
     if (p?.then) p.then(() => (playBtn.hidden = true)).catch(() => (playBtn.hidden = false));
   };
@@ -292,6 +293,7 @@ export function init(root, ctx) {
     gsap.set(tileInner, { y: () => -window.innerHeight * 0.5, rotation: () => gsap.utils.random(-140, 140), autoAlpha: 0 });
     gsap.set([barsEl, top, meta, cue], { autoAlpha: 0 });
     ctx.onEntered(() => {
+      entered = true;
       tryPlay();
       gsap.to(tileInner, { y: 0, rotation: 0, autoAlpha: 1, duration: 1.15, stagger: 0.07, ease: 'bounce.out', delay: 0.25 });
       gsap.fromTo(barsEl, { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, autoAlpha: 1, duration: 0.9, ease: 'wb.out', delay: 0.2 });
@@ -299,7 +301,12 @@ export function init(root, ctx) {
       cueTween = gsap.fromTo(cue.querySelector('i'), { scaleY: 0 }, { scaleY: 1, duration: 1.1, ease: 'power2.inOut', repeat: -1, yoyo: true, delay: 1.2 });
     });
   }
-  if (reduced) ctx.onEntered(tryPlay);
+  if (reduced) {
+    ctx.onEntered(() => {
+      entered = true;
+      tryPlay();
+    });
+  }
 
   return () => {
     gsap.ticker.remove(tick);
