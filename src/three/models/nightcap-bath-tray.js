@@ -18,8 +18,8 @@ const rad = (deg) => (deg * Math.PI) / 180;
  *  - blind recesses (holes with `depth`) that get real walls and a floor,
  *  - optional mitred edges (`miter: 1` is a 45 degree undercut),
  *  - wood UVs that wrap over the eased edges, so the grain on top carries on down the sides without a seam.
- * Plan points are [x, z] in metres; the slab spans y = 0 .. T; grain runs along x. Returns a non-indexed BufferGeometry with one
- * geometry group per `group` index used (0 = body).
+ * Plan points are [x, z] in metres; the slab spans y = 0 .. T; grain runs along x. Returns a non-indexed
+ * BufferGeometry with one geometry group per `group` index used (0 = body).
  */
 function easedSlab({ outline, holes = [], T, tile = [0.5, 0.25], offset = [0, 0] }) {
   const [su, sv] = tile; // metres of wood per texture tile along / across the grain (negative flips)
@@ -350,7 +350,7 @@ export function build({ wood = 'rosewood' } = {}) {
   const seam = K.part(seamGeo, K.M.recess(), { pos: [cx, T - mm(1.8), cz], shadow: false });
 
   // ---------- cleats that sit against the inside of the tub rim ----------
-  const cleatSize = [K.inch(0.7), K.inch(0.75), W - K.inch(0.9)];
+  const cleatSize = [K.inch(0.65), K.inch(0.62), W - K.inch(0.9)];
   const cleat = (x) =>
     K.board([cleatSize[0], cleatSize[1] + mm(0.4), cleatSize[2]], { species: wood, grain: 'z', size: 0.42, radius: mm(1.4), pos: [x, -cleatSize[1] / 2 + mm(0.2), 0] });
 

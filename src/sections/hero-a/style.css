@@ -1,0 +1,452 @@
+/* Hero A, "Story first".
+   Two layouts share one DOM:
+   - the default below is a calm poster (story as a card beside the type). It is what shows with reduced motion,
+     or if the script never runs;
+   - .is-live (added by index.js) turns the phone layout into a full-bleed story that the scroll sequence
+     collapses back into that same poster. Hidden start states are set from JS, never here. */
+
+.s-hero-a {
+  --pad-t: calc(var(--safe-t) + 16px);
+  --pad-b: calc(var(--dock-h) + var(--safe-b) + 24px); /* the dock's airspace */
+  --overscan: 0px; /* how much taller the screen gets when the mobile toolbar collapses */
+  --card-r: 22px;
+  --bar-h: 3px;
+  --who-h: 30px;
+  background: var(--cream);
+  color: var(--ink);
+}
+@supports (height: 100lvh) {
+  .s-hero-a {
+    --overscan: calc(100lvh - 100svh);
+  }
+}
+
+/* ---------- stage: a four-row poster grid, type anchored to the bottom ---------- */
+.s-hero-a__stage {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--card-w, 46%);
+  grid-template-rows: minmax(64vw, 1fr) auto auto auto;
+  grid-template-areas:
+    'side  slot'
+    'title title'
+    'lede  lede'
+    'shop  shop';
+  column-gap: 14px;
+  min-height: 100svh;
+  padding: var(--pad-t) var(--gutter) var(--pad-b);
+  background: var(--cream);
+}
+
+.s-hero-a__flood {
+  position: absolute;
+  inset: 0 0 calc(var(--overscan) * -1);
+  z-index: -1;
+  background: var(--orange);
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+
+/* ---------- side column: tiles, step numeral, kicker ---------- */
+.s-hero-a__side {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+}
+.s-hero-a__mark {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-right: -22px; /* the last column leans onto the story card like a sticker */
+}
+.s-hero-a__tp {
+  position: relative;
+  z-index: 4;
+  pointer-events: none;
+}
+.s-hero-a__step {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.s-hero-a__num {
+  display: block;
+  font-size: clamp(4rem, 12.5svh, 6.6rem);
+}
+.s-hero-a__roll {
+  display: inline-grid;
+  overflow: clip;
+  vertical-align: top;
+}
+.s-hero-a__roll > span {
+  grid-area: 1 / 1;
+}
+.s-hero-a__num .s-hero-a__roll {
+  padding: 0.05em 0.02em 0.03em 0;
+}
+.s-hero-a__of {
+  padding-bottom: 0.75em;
+}
+.s-hero-a__kicker {
+  display: grid;
+  gap: 5px;
+}
+.s-hero-a__kicker em {
+  font-size: clamp(1.7rem, 8.2vw, 2.5rem);
+  line-height: 0.95;
+}
+
+.s-hero-a__slot {
+  grid-area: slot;
+  min-height: 0;
+}
+
+/* ---------- headline, lede, shop ---------- */
+.s-hero-a__title {
+  grid-area: title;
+  margin-top: 12px;
+  font-size: clamp(3.2rem, min(20.2vw, 11.6svh), 9.2rem);
+}
+/* each line is its own mask; the padding keeps ascenders and the tail of the y inside the clip */
+.s-hero-a__line {
+  display: block;
+  overflow: clip;
+  padding: 0.1em 0 0.18em;
+  margin: -0.1em 0 -0.18em;
+}
+.s-hero-a__line > span {
+  display: block;
+  white-space: nowrap;
+}
+.s-hero-a__lede {
+  grid-area: lede;
+  max-width: 36ch;
+  margin-top: 12px;
+  text-wrap: pretty;
+}
+.s-hero-a__shop {
+  grid-area: shop;
+  justify-self: start;
+  z-index: 5;
+  margin-top: 16px;
+}
+.s-hero-a__shop-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+}
+/* an ink copy of the button that wipes in while the orange field floods out from under it */
+.s-hero-a__shop-ink {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  border-radius: inherit;
+  background: var(--ink);
+  color: var(--paper);
+  clip-path: inset(0 100% 0 0);
+}
+
+/* ---------- the story ---------- */
+.s-hero-a__story {
+  --sx: 4.8cqw; /* side padding, equal to the page gutter when the story is full bleed */
+  --cap-b: 5cqw;
+  grid-area: slot;
+  position: relative;
+  z-index: 3;
+  container-type: inline-size;
+  overflow: hidden;
+  border-radius: var(--card-r);
+  background: var(--char);
+  color: var(--paper);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.s-hero-a__screen {
+  position: absolute;
+  inset: 0;
+}
+.s-hero-a__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--char);
+}
+/* two short scrims so the bars and the caption hold on bright footage */
+.s-hero-a__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(22, 19, 15, 0.58), rgba(22, 19, 15, 0) 24%),
+    linear-gradient(to top, rgba(22, 19, 15, 0.62), rgba(22, 19, 15, 0) 46%);
+  pointer-events: none;
+}
+
+.s-hero-a__tap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  touch-action: pan-y;
+}
+.s-hero-a__tap--prev {
+  left: 0;
+}
+.s-hero-a__tap--next {
+  right: 0;
+}
+.s-hero-a__tap:focus-visible {
+  outline-offset: -6px;
+}
+
+.s-hero-a__chrome {
+  position: absolute;
+  inset: 0 0 auto;
+  padding: 4.4cqw var(--sx) 0;
+  pointer-events: none;
+}
+.s-hero-a__bars {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: max(2px, 1cqw);
+}
+.s-hero-a__bars li {
+  height: max(2px, 0.8cqw);
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(244, 239, 226, 0.36);
+}
+.s-hero-a__bars i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--paper);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+.s-hero-a__who {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: var(--who-h);
+  margin-top: 8px;
+  white-space: nowrap;
+}
+.s-hero-a__badge {
+  flex: none;
+  width: 38px;
+}
+.s-hero-a__badge svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.s-hero-a__count {
+  display: inline-flex;
+  gap: 0.6ch;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.s-hero-a__cap {
+  position: absolute;
+  right: var(--sx);
+  bottom: var(--cap-b);
+  left: var(--sx);
+  pointer-events: none;
+}
+.s-hero-a__words {
+  display: grid;
+  align-items: end;
+  justify-items: start;
+}
+/* Captions wear her badge: butter fill, ink outline, orange drop. Legible on any frame without dimming the footage. */
+.s-hero-a__word {
+  grid-area: 1 / 1;
+  padding-bottom: 0.08em;
+  font-family: var(--f-display);
+  font-size: 24cqw; /* refined per word by fitWords() so every caption fills the width */
+  line-height: 0.86;
+  letter-spacing: 0.012em;
+  white-space: nowrap;
+  color: var(--butter);
+  -webkit-text-stroke: 0.09em var(--ink);
+  paint-order: stroke fill;
+  text-shadow:
+    0.025em 0.03em 0 var(--orange),
+    0.05em 0.06em 0 var(--orange),
+    0.075em 0.09em 0 var(--orange);
+  visibility: hidden;
+}
+.s-hero-a__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 1.8cqw;
+  white-space: nowrap;
+}
+.s-hero-a__hint {
+  opacity: 0.72;
+}
+
+.s-hero-a__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  color: var(--paper);
+}
+.s-hero-a__play-disc {
+  display: grid;
+  place-items: center;
+  width: clamp(54px, 22cqw, 88px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--butter);
+  color: var(--ink);
+  box-shadow:
+    inset 0 0 0 2px var(--ink),
+    4px 5px 0 var(--ink);
+}
+.s-hero-a__play-disc svg {
+  width: 44%;
+  margin-left: 6%;
+}
+.s-hero-a__play-disc path {
+  fill: currentColor;
+}
+
+/* a story this narrow is a thumbnail: bars and caption only */
+@container (max-width: 300px) {
+  .s-hero-a__who,
+  .s-hero-a__meta {
+    display: none;
+  }
+}
+
+.s-hero-a__mast {
+  display: none;
+}
+
+/* ---------- phone, live: the story is the whole screen ---------- */
+@media (max-width: 899px) {
+  .s-hero-a.is-live .s-hero-a__stage {
+    grid-template-rows: minmax(0, 1fr) auto auto auto;
+    height: 100svh;
+    min-height: 0;
+    overflow-x: clip;
+  }
+  .s-hero-a.is-live .s-hero-a__story {
+    --cap-b: calc(var(--overscan) + var(--pad-b) + 52px + 12px); /* sits on top of the Shop button */
+    position: absolute;
+    inset: 0 0 calc(var(--overscan) * -1);
+    border-radius: 0;
+    will-change: transform;
+  }
+  .s-hero-a.is-live .s-hero-a__chrome {
+    padding-top: calc(var(--safe-t) + 10px);
+  }
+  .s-hero-a.is-live .s-hero-a__bars {
+    gap: 4px;
+  }
+  .s-hero-a.is-live .s-hero-a__bars li {
+    height: var(--bar-h);
+  }
+  .s-hero-a.is-live .s-hero-a__mast {
+    position: absolute;
+    top: calc(var(--safe-t) + 10px + var(--bar-h) + 8px + var(--who-h) + 10px);
+    right: var(--gutter);
+    left: var(--gutter);
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 5px;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .s-hero-a__mast i {
+    aspect-ratio: 1;
+  }
+}
+
+/* short screens (Safari with its toolbars showing): the numeral steps aside so the card keeps its size */
+@media (max-width: 899px) and (max-height: 700px) {
+  .s-hero-a__step {
+    display: none;
+  }
+  .s-hero-a__lede {
+    font-size: var(--t-body);
+  }
+}
+
+/* ---------- desktop: the story is a tall card beside the type ---------- */
+@media (min-width: 900px) {
+  .s-hero-a {
+    --card-r: 30px;
+  }
+  .s-hero-a__stage {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: none;
+    grid-template-areas:
+      'side  story'
+      'title story'
+      'lede  story'
+      'shop  story';
+    column-gap: clamp(40px, 6vw, 104px);
+    align-content: center;
+    padding: clamp(28px, 5svh, 56px) clamp(40px, 6vw, 96px);
+  }
+  .s-hero-a.is-live .s-hero-a__stage {
+    height: 100svh;
+    overflow-x: clip;
+  }
+  .s-hero-a__slot,
+  .s-hero-a__step {
+    display: none;
+  }
+  .s-hero-a__side {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 28px;
+  }
+  .s-hero-a__mark {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 8px;
+    flex: 0 1 520px;
+    margin-right: 0;
+  }
+  .s-hero-a__kicker em {
+    font-size: 2.2rem;
+  }
+  .s-hero-a__title {
+    margin-top: clamp(18px, 3.4svh, 36px);
+    font-size: clamp(5rem, min(11.4vw, 19.5svh), 10.4rem);
+  }
+  .s-hero-a__lede {
+    max-width: 34ch;
+    margin-top: clamp(14px, 2.6svh, 26px);
+  }
+  .s-hero-a__shop {
+    margin-top: clamp(18px, 3svh, 30px);
+  }
+  .s-hero-a__story {
+    grid-area: story;
+    align-self: center;
+    height: min(86svh, 820px);
+    aspect-ratio: 9 / 16;
+    will-change: transform;
+  }
+}

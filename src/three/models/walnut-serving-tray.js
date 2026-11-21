@@ -4,7 +4,12 @@ import * as K from '../kit.js';
 
 const { THREE } = K;
 
-export const meta = { handle: 'walnut-serving-tray', view: { yaw: -1.02, pitch: 0.6 } };
+// The bar shows its upright faces in the hand-holds, where mirror-polished brass would only reflect the floor and
+// go dark. This satin brass keeps some diffuse gold, so it stays pale and bright from every turntable angle.
+let brass;
+const satinBrass = () => (brass ||= new THREE.MeshStandardMaterial({ color: 0xdbb055, metalness: 0.72, roughness: 0.34, emissive: 0x2b1d08, envMapIntensity: 1.15 }));
+
+export const meta = { handle: 'walnut-serving-tray', view: { yaw: -0.9, pitch: 0.56 } };
 
 // Closed outline from corner points [x, y, radius]: straight runs with softly broken corners.
 function outline(points) {
@@ -79,13 +84,13 @@ function markFaces(geo, pick) {
 export function build({ wood = 'walnut' } = {}) {
   const L = K.inch(18); // long sides, along X
   const W = K.inch(12); // handle ends, along Z
-  const H = K.inch(2.1);
-  const T = K.inch(0.68); // frame thickness
+  const H = K.inch(2.6);
+  const T = K.inch(0.82); // frame thickness
   const TB = K.inch(0.375); // bottom board
-  const NOTCH_W = K.inch(6.4); // hand-hold, centred on each end
-  const LIP = K.inch(0.72); // what is left of the end below the hand-hold
-  const BAR_W = K.inch(0.125); // brass bar, on edge
-  const BAR_H = K.inch(0.26);
+  const NOTCH_W = K.inch(6.2); // hand-hold, centred on each end
+  const LIP = K.inch(0.88); // what is left of the end below the hand-hold
+  const BAR_W = K.inch(0.14); // brass bar, on edge
+  const BAR_H = K.inch(0.28);
   const GRAIN = 0.5;
   const MITRE = 0.0005; // hairline break along each mitre
 
@@ -101,18 +106,16 @@ export function build({ wood = 'walnut' } = {}) {
     [L / 2, H, MITRE],
     [-L / 2, H, MITRE],
   ]);
-  const side = (front) => {
-    const geo = markFaces(mitredBoard(sideProfile, L, T), () => false);
-    return K.wood(geo, {
+  const side = (front) =>
+    K.wood(mitredBoard(sideProfile, L, T), {
       species: wood,
       grain: 'x',
       size: GRAIN,
-      materials: [face, cut],
+      materials: [face, face], // an extrusion has two groups: its faces and its edges
       pos: [0, 0, front ? W / 2 : -W / 2],
       rot: [0, front ? Math.PI : 0, 0],
       name: 'side',
     });
-  };
 
   // Handle ends: the same board with a hand-hold cut down from the top, and the brass bar let into the top edge.
   const n = NOTCH_W / 2;
@@ -121,8 +124,8 @@ export function build({ wood = 'walnut' } = {}) {
     [W / 2, 0],
     [W / 2, H, MITRE],
     [n, H, 0.0008],
-    [n, LIP, 0.003],
-    [-n, LIP, 0.003],
+    [n, LIP, 0.004],
+    [-n, LIP, 0.004],
     [-n, H, 0.0008],
     [-W / 2, H, MITRE],
   ]);
@@ -138,7 +141,7 @@ export function build({ wood = 'walnut' } = {}) {
     const board = K.wood(boardGeo, { species: wood, grain: 'x', size: GRAIN, materials: [face, cut], name: 'handle-end' });
     const barGeo = mitredBoard(barProfile, barLen, BAR_W, { ease: 0.0003 });
     barGeo.translate(0, H - BAR_H + 0.0003, T / 2 - BAR_W / 2); // top a hair proud of the wood so it reads flush
-    const bar = K.part(barGeo, K.M.brass(), { name: 'brass-bar' });
+    const bar = K.part(barGeo, satinBrass(), { name: 'brass-bar' });
     const g = K.group(board, bar);
     g.position.x = right ? L / 2 : -L / 2;
     g.rotation.y = right ? -Math.PI / 2 : Math.PI / 2;

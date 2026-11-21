@@ -78,9 +78,12 @@ function mitredSide({ length: L, height: H, thick: t, ease: e = 0.0012, easeSegm
   // The hairline V along the top of each mitre.
   if (seam > 0) {
     idx = groove;
-    const s3 = 1 / Math.sqrt(3);
     [-1, 1].forEach((sgn) => {
-      const lips = top.map((q) => [vert(sgn * (L / 2 - q.d - q.g), q.y, -q.d, sgn * s3, s3, -s3), vert(sgn * (L / 2 - q.d), q.y - q.g, -q.d, sgn * s3, s3, -s3)]);
+      const lips = top.map((q) => {
+        // each lip faces half way between the top surface and the mitre plane
+        const n = new THREE.Vector3(sgn * Math.SQRT1_2, q.ny, q.nz - Math.SQRT1_2).normalize();
+        return [vert(sgn * (L / 2 - q.d - q.g), q.y, -q.d, n.x, n.y, n.z), vert(sgn * (L / 2 - q.d), q.y - q.g, -q.d, n.x, n.y, n.z)];
+      });
       for (let k = 0; k < lips.length - 1; k++) quad(lips[k][0], lips[k][1], lips[k + 1][1], lips[k + 1][0]);
     });
   }

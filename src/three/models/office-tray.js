@@ -4,6 +4,11 @@ import * as K from '../kit.js';
 
 const { THREE } = K;
 
+// The dowel ends sit on upright faces, where mirror-polished brass would only reflect the floor and go dark.
+// This satin brass keeps some diffuse gold, so the dots stay pale and bright from every turntable angle.
+let brass;
+const satinBrass = () => (brass ||= new THREE.MeshStandardMaterial({ color: 0xdbb055, metalness: 0.6, roughness: 0.36, emissive: 0x33230a, envMapIntensity: 1.2 }));
+
 export const meta = { handle: 'office-tray', view: { yaw: -0.56, pitch: 0.56 } };
 
 export function build({ wood = 'walnut' } = {}) {
@@ -68,17 +73,14 @@ export function build({ wood = 'walnut' } = {}) {
   );
 
   // Brass dowels: two per corner, driven through the long side into the end of the short side, sanded flush.
-  // The ends sit on vertical faces, where mirror-like brass would only reflect the floor, so they get a satin
-  // brass that keeps its pale gold from every turntable angle.
-  const dowelBrass = new THREE.MeshStandardMaterial({ color: 0xdbb055, metalness: 0.6, roughness: 0.36, emissive: 0x33230a, envMapIntensity: 1.2 });
-  const dowelGeo = K.cylGeo(K.inch(0.085), K.inch(0.9), 28);
   const dowelLen = K.inch(0.9);
+  const dowelGeo = K.cylGeo(K.inch(0.085), dowelLen, 28);
   const proud = 0.00025;
   for (const sx of [1, -1]) {
     for (const sz of [1, -1]) {
       for (const y of [H * 0.3, H * 0.65]) {
         parts.push(
-          K.part(dowelGeo, dowelBrass, {
+          K.part(dowelGeo, satinBrass(), {
             pos: [sx * (L / 2 - T / 2), y, sz * (W / 2 + proud - dowelLen / 2)],
             rot: [Math.PI / 2, 0, 0],
             shadow: false,

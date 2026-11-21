@@ -133,13 +133,19 @@ def rabbit(photo, out, n=1400, size=1024):
     # Where the mirror shows the room in beige or shadow, the engraving is lighter than what is behind it.
     k = int(121 * s) | 1
     behind = rank(rank(blue, k, np.min), k, np.max)  # opening: the room without the engraving
-    a_beige = (blue - behind) / np.maximum(205 - behind, 25)
+    a_beige = (blue - behind) / np.maximum(228 - behind, 25)
+    # A cabinet-door gap reflects as a thin light vertical through the hare's head and hind leg and survives
+    # the opening. It is measured on a stretch of its own columns where the hare is not, and taken off the run.
+    for cols, ref, run in (((890, 950), (60, 180), (0, 800)), ((890, 950), (1318, 1352), (960, 1400))):
+        c = slice(int(cols[0] * s), int(cols[1] * s))
+        stray = np.median(a_beige[int(ref[0] * s) : int(ref[1] * s), c], axis=0)
+        a_beige[int(run[0] * s) : int(run[1] * s), c] -= np.maximum(stray, 0)[None, :]
 
     # Left of the door's edge the mirror shows white trim, and the engraving is greyer than it.
     rows = slice(int(300 * s), int(760 * s))
     edge = int(np.median([np.argmax(blue[y, int(380 * s) : int(540 * s)] < 180) for y in range(rows.start, rows.stop, 7)])) + int(380 * s)
     trim = np.percentile(blue[int(110 * s) : int(760 * s), :edge], 85, axis=0)  # per column: the trim runs straight up
-    a_white = (trim[None, :] - blue[:, :edge]) / np.maximum(trim[None, :] - 185, 25)
+    a_white = (trim[None, :] - blue[:, :edge]) / np.maximum(trim[None, :] - 176, 25)
 
     alpha = a_beige.copy()
     alpha[:, :edge] = a_white
@@ -147,7 +153,7 @@ def rabbit(photo, out, n=1400, size=1024):
     for i in range(-g + 1, g):  # the door edge itself: bridge straight across it
         t = (i + g) / (2 * g)
         alpha[:, edge + i] = alpha[:, edge - g] * (1 - t) + alpha[:, edge + g] * t
-    alpha = smoothstep(alpha, 0.17, 0.82)
+    alpha = smoothstep(alpha, 0.13, 0.9)
 
     # Keep the hare, drop everything else the mirror reflects (cabinet lines, handles, the rim).
     upper = [(350, 150), (372, 100), (450, 96), (536, 108), (540, 62), (566, 24), (650, 18), (776, 46), (856, 104), (906, 176), (946, 210), (940, 246),
@@ -166,14 +172,44 @@ def rabbit(photo, out, n=1400, size=1024):
 
     # The photo's shelf hides a band of the glass. Run the cut strokes a little way in behind the model's
     # shelf, so no bare strip shows if its edges do not land exactly where the photo's did.
-    top_cut, bottom_cut = int(773 * s), int(1019 * s)
-    alpha[top_cut : int(830 * s)] = alpha[top_cut - 1]
-    alpha[int(970 * s) : bottom_cut] = alpha[bottom_cut]
-    alpha[int(830 * s) : int(970 * s)] = 0
+    top_cut, bottom_cut, nudge = int(776 * s), int(1016 * s), int(9 * s)
+    mid = n * 9 // 14
+    upper_half = np.roll(alpha[:mid], nudge, axis=0)  # and close the two halves up by a sixth of an inch each
+    lower_half = np.roll(alpha[mid:], -nudge, axis=0)
+    alpha = np.concatenate([upper_half, lower_half])
+    top_cut += nudge
+    bottom_cut -= nudge
+    alpha[top_cut : int(840 * s)] = alpha[top_cut - 1]
+    alpha[int(960 * s) : bottom_cut] = alpha[bottom_cut]
+    alpha[int(840 * s) : int(960 * s)] = 0
+    alpha *= smoothstep(0.985 - rad, 0, 0.012)
 
     a8 = Image.fromarray((np.clip(alpha, 0, 1) * 255).astype(np.uint8)).resize((size, size), Image.LANCZOS)
     rgba = Image.merge('RGBA', (*[Image.new('L', (size, size), c) for c in (250, 250, 247)], a8))
     rgba.save(out, 'WEBP', quality=90, method=6, exact=True)
+    print('wrote', out, os.path.getsize(out) // 1024, 'KB')
+
+
+# ---------------------------------------------------------------------------------------------- figure
+
+
+def figure(photo, out, size=(1024, 352)):
+    """The catchall's figured front, cut square-on from the front-view photo and re-toned to sit beside the
+    shared walnut texture: same average colour, so one tint works for both, with the board's own swirl kept."""
+    face = Image.open(photo).convert('RGB').crop((72, 746, 464, 872))  # the face, clear of its eased edges
+    face = np.asarray(face.resize(size, Image.LANCZOS)).astype(np.float32)
+    walnut = Image.open(os.path.join(OUT, 'walnut.webp')).convert('RGB')
+    w = np.asarray(walnut).astype(np.float32)
+    # The photo is small for a texture, so borrow the fine pores from the walnut texture (at matching scale).
+    patch = walnut.crop((256, 160, 256 + size[0] // 2, 160 + size[1] // 2)).resize(size, Image.LANCZOS)
+    soft = patch.filter(ImageFilter.GaussianBlur(7))
+    pores = np.asarray(patch).astype(np.float32).mean(-1) / np.maximum(np.asarray(soft).astype(np.float32).mean(-1), 1)
+    face = face * (1 + 0.55 * (pores[:, :, None] - 1))
+    face = face * (w.reshape(-1, 3).mean(0) / face.reshape(-1, 3).mean(0))[None, None, :]
+    mean = face.reshape(-1, 3).mean(0)[None, None, :]
+    face = (mean + (face - mean) * 0.8) * 0.94  # a touch calmer and deeper, to sit with the boards beside it
+    print('figure: mean', face.reshape(-1, 3).mean(0).round(1), 'std', face.reshape(-1, 3).std(0).round(1), '| walnut std', w.reshape(-1, 3).std(0).round(1))
+    Image.fromarray(np.clip(face, 0, 255).astype(np.uint8)).save(out, 'WEBP', quality=88, method=6)
     print('wrote', out, os.path.getsize(out) // 1024, 'KB')
 
 
@@ -182,3 +218,5 @@ if __name__ == '__main__':
         sys.exit(__doc__)
     os.makedirs(OUT, exist_ok=True)
     rabbit(sys.argv[1], os.path.join(OUT, 'the-entry-valet-rabbit.webp'))
+    if len(sys.argv) > 2:
+        figure(sys.argv[2], os.path.join(OUT, 'the-entry-valet-figure.webp'))

@@ -108,18 +108,26 @@ function boxWrapUV(geo, { w, d, su, sv, offset = [0, 0] }) {
  * A board extruded along X from a closed section drawn in (z, y), counter-clockwise with z to the right.
  * Section points are [z, y] or [z, y, nz, ny]; points that carry a normal shade as a smooth round-over.
  * `skew(z, y)` shifts the x1 end, for an end cut on an angle. Several runs can be merged into one board.
+ * `shade(z, y)` (0..1) bakes soft shadow into vertex colours where a part sits under an overhang.
  */
 function extrudeX(runs) {
   const P = [];
   const N = [];
+  const C = [];
+  let shadeOf = () => 1;
   const tri = (a, b, c, na, nb, nc) => {
     P.push(...a, ...b, ...c);
     N.push(...na, ...nb, ...nc);
+    for (const p of [a, b, c]) {
+      const k = shadeOf(p[2], p[1]);
+      C.push(k, k, k);
+    }
   };
   const v = new THREE.Vector3();
   const w = new THREE.Vector3();
-  for (const { section, x0, x1, skew = () => 0, caps = [true, true] } of runs) {
+  for (const { section, x0, x1, skew = () => 0, caps = [true, true], shade = () => 1 } of runs) {
     const n = section.length;
+    shadeOf = shade;
     for (let i = 0; i < n; i++) {
       const a = section[i];
       const b = section[(i + 1) % n];
@@ -155,6 +163,7 @@ function extrudeX(runs) {
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.Float32BufferAttribute(P, 3));
   geo.setAttribute('normal', new THREE.Float32BufferAttribute(N, 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(C, 3));
   return geo;
 }
 
@@ -200,6 +209,11 @@ export function build({ wood = 'walnut' } = {}) {
   const glass = K.part(new THREE.CircleGeometry(RG - bevel, 128), K.M.mirror(), { pos: [0, 0, glassZ], shadow: false, name: 'glass' });
   // A hairline polished bevel at the edge of the glass catches a different slice of the room.
   const glassEdge = K.part(latheZ([[RG, glassZ - bevel * 0.4], [RG - bevel, glassZ]], 128), K.M.mirror(), { shadow: false, name: 'glass-bevel' });
+  // The White Rabbit, engraved: her own artwork lifted from the product photo, frosted white on the glass.
+  const etchGeo = new THREE.CircleGeometry(RG - bevel, 96);
+  const etchUV = etchGeo.attributes.uv;
+  for (let i = 0; i < etchUV.count; i++) etchUV.setXY(i, 0.5 + (etchUV.getX(i) - 0.5) * (1 - bevel / RG), 0.5 + (etchUV.getY(i) - 0.5) * (1 - bevel / RG));
+  const etch = K.part(etchGeo, K.M.decal('the-entry-valet-rabbit'), { pos: [0, 0, glassZ + 0.0003], shadow: false, name: 'engraving' });
   // Dark line of shadow where the glass meets the rim.
   const reveal = K.part(new THREE.CircleGeometry(Ri + 0.001, 128), K.M.recess(), { pos: [0, 0, glassZ - 0.0006], shadow: false });
 
@@ -223,14 +237,14 @@ export function build({ wood = 'walnut' } = {}) {
   const TB = inch(0.75); // back board thickness
   const ZB = Z0 + TB;
   const ZF = Z0 + inch(4.5); // front of the catchall
-  const yS = -inch(2.1); // top surface of shelf and catchall
+  const yS = -inch(2.0); // top surface of shelf and catchall
   const RAIL = inch(0.5); // the back board stands this proud of the shelf
-  const TS = inch(0.85); // shelf thickness
-  const APRON = inch(1.85); // apron showing under the shelf
-  const HB = inch(3.5); // catchall height
+  const TS = inch(0.82); // shelf thickness
+  const APRON = inch(2.05); // apron showing under the shelf
+  const HB = inch(3.6); // catchall height
   const XL = -inch(12.75);
   const XR = inch(12.75);
-  const XS = inch(13.75); // the shelf runs on past the back board
+  const XS = inch(14.1); // the shelf runs on past the back board
   const WB = inch(10.2); // catchall width
   const XB = XL + WB;
   const yApron = yS - TS - APRON;
@@ -239,21 +253,35 @@ export function build({ wood = 'walnut' } = {}) {
   // Back board: one piece, a rounded rail along the top, the apron under the shelf, stepped down behind the catchall.
   const xStep = XB - inch(0.25);
   const yRail = yS + RAIL;
+  const yUnder = yS - TS; // underside of the shelf
   const backSection = (yBottom) => [
     [0.0012, yBottom],
     [TB - 0.0012, yBottom],
     [TB, yBottom + 0.0012],
+    [TB, yUnder],
+    [TB, yS],
     ...roundOver(TB - inch(0.24), yRail - inch(0.24), inch(0.24), 0, Math.PI / 2, 6),
     ...roundOver(inch(0.06), yRail - inch(0.06), inch(0.06), Math.PI / 2, Math.PI, 3),
     [0, yBottom + 0.0012],
   ];
+  // The apron lives in the shelf's shadow and the back of the catchall in its own: bake that in, darkest up
+  // under the shelf and deep in the box, so the brass reads against it the way it does in her photos.
+  const faceOnly = (fn) => (z, y) => (z > TB - 0.0005 && y < yS + 1e-5 ? fn(y) : 1);
+  const mix = (a, b, t) => a + (b - a) * Math.min(1, Math.max(0, t));
   const backBoard = K.wood(
     extrudeX([
-      { section: backSection(yBox), x0: XL, x1: xStep, caps: [true, true] },
-      { section: backSection(yApron), x0: xStep, x1: XR, caps: [false, true] },
+      { section: backSection(yBox), x0: XL, x1: xStep, caps: [true, true], shade: faceOnly((y) => mix(0.5, 0.95, (y - yBox) / HB)) },
+      {
+        section: backSection(yApron),
+        x0: xStep,
+        x1: XR,
+        caps: [false, true],
+        shade: faceOnly((y) => (y > yUnder + 1e-5 ? 1 : mix(0.66, 0.4, (y - yApron) / APRON))),
+      },
     ]),
     { species: wood, grain: 'x', size: 0.52, pos: [0, 0, Z0], name: 'back-board' },
   );
+  backBoard.material.vertexColors = true;
 
   // Catchall walls: one U of walnut, grain wrapping the mitred front corners.
   const DP = ZF - ZB;
@@ -273,14 +301,24 @@ export function build({ wood = 'walnut' } = {}) {
   u.lineTo(wall - ce, -(DP - front + ce));
   u.lineTo(wall - ce, 0);
   u.closePath();
-  const box = K.slab(u, HB, { species: wood, ease: ce, curveSegments: 10, pos: [XL, yBox, ZB], name: 'catchall' });
-  boxWrapUV(box.geometry, { w: WB, d: DP, su: 0.46, sv: 0.23, offset: [0.13, 0.42] });
+  // In walnut the catchall wears her own figured board, cut from the product photo: one tile spans the front
+  // and mirrors around each corner, the way a waterfall mitre book-matches. It is walnut by nature, so it is
+  // 'fixed'; any other species gets plain wrapped grain that follows the swatches.
+  const figured = wood === 'walnut';
+  const box = K.slab(u, HB, { species: wood, role: figured ? 'fixed' : 'primary', ease: ce, curveSegments: 10, pos: [XL, yBox, ZB], name: 'catchall' });
+  if (figured) {
+    box.material.map = box.material.bumpMap = K.M.texture('the-entry-valet-figure');
+    boxWrapUV(box.geometry, { w: WB, d: DP, su: WB, sv: HB });
+  } else {
+    boxWrapUV(box.geometry, { w: WB, d: DP, su: 0.46, sv: 0.23, offset: [0.13, 0.42] });
+  }
   const floorT = inch(0.45);
   const floor = K.board([WB - wall * 2 + 0.002, floorT, DP - front + 0.001], {
     species: wood,
     grain: 'x',
     size: 0.5,
     radius: 0.0008,
+    darken: 0.62, // the bottom of the box sits in shade
     pos: [XL + WB / 2, yBox + inch(0.03) + floorT / 2, ZB + (DP - front + 0.001) / 2],
     name: 'catchall-floor',
   });
@@ -305,16 +343,16 @@ export function build({ wood = 'walnut' } = {}) {
   // Six brass peg hooks on the apron.
   const hookProfile = [
     [0, -0.1],
-    [0.28, -0.1],
-    [0.28, 0.86],
-    [0.3, 0.88],
-    [0.3, 0.93],
-    [0.22, 0.95],
-    [0.22, 1.0],
-    [0.35, 1.01],
-    [0.385, 1.045],
-    [0.385, 1.27],
-    [0.36, 1.3],
+    [0.27, -0.1],
+    [0.27, 0.84],
+    [0.3, 0.86],
+    [0.3, 0.92],
+    [0.2, 0.94],
+    [0.2, 1.0],
+    [0.36, 1.01],
+    [0.395, 1.045],
+    [0.395, 1.27],
+    [0.365, 1.3],
     [0, 1.3],
   ].map(([r, z]) => [inch(r), inch(z)]);
   const hookGeo = latheZ(hookProfile, 36, true);
@@ -327,5 +365,5 @@ export function build({ wood = 'walnut' } = {}) {
   const pinL = K.brassRod(inch(0.07), 0.004, { rot: [0, 0, Math.PI / 2], pos: [XL + 0.0016, yBox + inch(1.1), Z0 + TB / 2], shadow: false });
   const pinR = K.brassRod(inch(0.07), 0.004, { rot: [0, 0, Math.PI / 2], pos: [XR - 0.0016, yApron + inch(1.0), Z0 + TB / 2], shadow: false });
 
-  return K.seat(K.group(rim, glass, glassEdge, reveal, backPanel, cleat, backBoard, box, floor, shelf, hooks, pinL, pinR));
+  return K.seat(K.group(rim, glass, glassEdge, etch, reveal, backPanel, cleat, backBoard, box, floor, shelf, hooks, pinL, pinR));
 }
